@@ -5,10 +5,9 @@ import { initPwaInstall } from "./features/pwaInstall";
 import { initWebMcpTools } from "./features/webmcp";
 import { initDataHubListeners } from "./features/dataHub";
 import { initFuelListeners } from "./features/fuel";
-import { autoSyncToGoogleDrive, initGoogleDriveListeners } from "./features/googleDrive";
+import { autoSyncToGoogleDrive, initGoogleDriveListeners, isGoogleSignedIn } from "./features/googleDrive";
 import { syncProfileSelectOptions } from "./features/headerKpis";
 import { initHistoryListeners } from "./features/history";
-import { initHomeFaqs } from "./features/homeFaqs";
 import { initOdometerListeners } from "./features/odometer";
 import { initPeriodicScheduleListeners, renderPeriodicTable } from "./features/periodicSchedule";
 import {
@@ -24,6 +23,7 @@ import { initWelcomeListeners } from "./features/welcome";
 import {
   getActiveProfileKey,
   getCustomProfilesMap,
+  hasSavedCars,
   loadProfile,
   registerStoreCallbacks,
   setActiveProfileKey,
@@ -45,6 +45,23 @@ registerStoreCallbacks({
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDashboardPath = window.location.pathname === "/dashboard" || window.location.pathname === "/dashboard/";
+  const explicitDashboard =
+    isDashboardPath || urlParams.get("view") === "dashboard" || urlParams.has("car") || urlParams.has("profile");
+
+  if (!explicitDashboard && !hasSavedCars() && !isGoogleSignedIn() && window.location.protocol.startsWith("http")) {
+    window.location.replace("/landing");
+    return;
+  }
+
+  if (!isDashboardPath && window.location.protocol.startsWith("http")) {
+    urlParams.delete("view");
+    const nextSearch = urlParams.toString();
+    const targetUrl = "/dashboard" + (nextSearch ? "?" + nextSearch : "") + window.location.hash;
+    window.history.replaceState({}, "", targetUrl);
+  }
+
   const customMap = getCustomProfilesMap();
   const savedKeys = Object.keys(customMap);
 
@@ -96,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookieConsent();
   initPwaInstall();
   initWebMcpTools();
-  void initHomeFaqs();
 
   // Register Service Worker for PWA (Installable App & Offline Mode)
   if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {

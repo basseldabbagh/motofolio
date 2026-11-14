@@ -180,8 +180,6 @@
 			}
 		</script>
 
-		<!-- FAQPage JSON-LD (populated at build time from /public/data/faqs.json) -->
-		<!-- HOME_FAQ_JSONLD -->
 
 		<!-- Deployment Configuration (Google OAuth Client ID) -->
 		<script src="config.js" defer></script>
@@ -382,46 +380,12 @@
 		<!-- Sticky Top Bar -->
 		<header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-950/85 border-b border-slate-800/80" role="banner">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
-				<!-- Brand & Vehicle Identity -->
-				<div class="flex items-center gap-3 sm:gap-4">
-					<a href="#" class="flex items-center shrink-0 group py-0.5" title="My MotoFolio Home">
+				<!-- Left Side: Brand Logo Only -->
+				<div class="flex items-center">
+					<a href="/landing" class="flex items-center shrink-0 group py-0.5" title="My MotoFolio — Overview &amp; Landing Page">
 						<img src="/images/identity/logo-light.png" alt="My MotoFolio" width="104" height="28" loading="eager" decoding="async" class="h-6 sm:h-7 w-auto hidden dark:block" />
 						<img src="/images/identity/logo.png" alt="My MotoFolio" width="104" height="28" loading="eager" decoding="async" class="h-6 sm:h-7 w-auto block dark:hidden" />
 					</a>
-					<div>
-						<div class="flex items-center gap-2 flex-wrap">
-							<span
-								id="headerVehicleIconBox"
-								class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-orange-500/15 text-orange-400 border border-orange-500/30 shrink-0"
-							>
-								<span id="headerVehicleIcon" class="w-3.5 h-3.5 flex items-center justify-center">
-									<svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M8 17a2 2 0 100 4 2 2 0 000-4zm8 0a2 2 0 100 4 2 2 0 000-4zM3 9l2-5h14l2 5M3 9h18M3 9v8h2m16-8v8h-2M7 17h6" />
-									</svg>
-								</span>
-							</span>
-							<h1 id="headerCarTitle" class="text-sm sm:text-base font-bold tracking-tight text-white">
-								Vehicle Maintenance
-							</h1>
-							<span
-								id="headerPlateBadge"
-								class="px-2 py-0.5 text-xs font-mono font-semibold rounded-md bg-slate-800 text-orange-400 border border-slate-700"
-								>—</span
-							>
-							<button
-								id="editVehicleBtn"
-								type="button"
-								class="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-orange-400 transition"
-								title="Edit Vehicle Details"
-							>
-								<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-								</svg>
-								<span>Edit</span>
-							</button>
-						</div>
-						<p id="headerEngineSub" class="text-xs text-slate-400">Periodic Schedule &amp; Service History</p>
-					</div>
 				</div>
 
 				<!-- Action Buttons -->
@@ -551,7 +515,7 @@
 			<!-- ======================================================================= -->
 			<!-- VEHICLE DASHBOARD (ACTIVE CAR VIEW)                                     -->
 			<!-- ======================================================================= -->
-			<div id="vehicleDashboardView" class="space-y-5">
+			<div id="vehicleDashboardView" class="hidden space-y-5">
 				<!-- Global Filters Bar -->
 				<section
 					class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-3"
@@ -1110,45 +1074,20 @@
 				id="vehicleSpecsFooter"
 				class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-xs text-slate-400 grid grid-cols-2 lg:grid-cols-4 gap-4"
 			></section>
-
-			<!-- Frequently Asked Questions (SEO & AEO Knowledge Base) -->
-			<section
-				id="faqSection"
-				class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 sm:p-6 space-y-4"
-				aria-labelledby="faqHeading"
-			>
-				<div class="flex items-center gap-2.5 pb-2 border-b border-slate-800/80">
-					<div class="w-8 h-8 rounded-xl bg-orange-500/15 text-orange-400 flex items-center justify-center shrink-0 border border-orange-500/25">
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
-					</div>
-					<div>
-						<h2 id="faqHeading" class="text-sm sm:text-base font-bold text-white tracking-tight">Frequently Asked Questions</h2>
-						<p class="text-xs text-slate-400">Everything you need to know about periodic maintenance schedules, privacy, and vehicle logs</p>
-					</div>
-				</div>
-
-				<div id="homeFaqList" class="space-y-3">
-					<!-- HOME_FAQ_PRERENDER_CONTENT -->
-				</div>
-				<p class="mt-4 text-xs text-slate-400">
-					Looking for more answers on service intervals, CSV/JSON imports, or Google Drive sync? Explore the full <a href="/faqs" class="text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">My MotoFolio FAQs</a>.
-				</p>
-			</section>
 			</div>
 		</main>
 
 		<!-- Site Footer -->
 		<footer class="border-t border-slate-800/80 bg-slate-950/60 mt-8" role="contentinfo">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-				<div class="flex items-center gap-2 flex-wrap">
-					<img src="/images/identity/icon-light.png" alt="My MotoFolio" width="20" height="20" loading="lazy" decoding="async" class="w-5 h-5 object-contain shrink-0 hidden dark:inline-block theme-logo-dark" />
-					<img src="/images/identity/icon.png" alt="My MotoFolio" width="20" height="20" loading="lazy" decoding="async" class="w-5 h-5 object-contain shrink-0 inline-block dark:hidden theme-logo-light" />
-					<span class="font-mono font-bold text-indigo-700 dark:text-indigo-400">My MotoFolio</span>
-					<span>100% Client-Side Vehicle Maintenance Tracker (MIT License)</span>
+				<div class="flex items-center">
+					<a href="/landing" class="flex items-center shrink-0 py-0.5" title="My MotoFolio — Overview &amp; Landing Page">
+						<img src="/images/identity/logo-light.png" alt="My MotoFolio" width="104" height="28" loading="lazy" decoding="async" class="h-5 sm:h-6 w-auto hidden dark:block" />
+						<img src="/images/identity/logo.png" alt="My MotoFolio" width="104" height="28" loading="lazy" decoding="async" class="h-5 sm:h-6 w-auto block dark:hidden" />
+					</a>
 				</div>
 				<div class="flex items-center gap-4 flex-wrap">
+					<a href="/landing" class="hover:text-white transition">Overview</a>
 					<a href="/faqs" class="hover:text-white transition">FAQs</a>
 					<a href="/privacy-policy" class="hover:text-white transition">Privacy Policy</a>
 					<a href="/terms-of-service" class="hover:text-white transition">Terms of Service</a>

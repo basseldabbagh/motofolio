@@ -60,6 +60,10 @@ export function getDriveUserEmail(): string {
   return localStorage.getItem(GDRIVE_STORAGE_EMAIL) || "";
 }
 
+export function isGoogleSignedIn(): boolean {
+  return Boolean(getDriveAccessToken() || getDriveUserEmail());
+}
+
 export function updateDriveUI(): void {
   const token = getDriveAccessToken();
   const email = getDriveUserEmail();

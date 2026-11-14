@@ -5,11 +5,15 @@ import path from "node:path";
 /** Maps clean page URLs (/privacy-policy, /terms-of-service, /faqs) and hoists pages/*.html to dist root. */
 function cleanLegalRoutes(): Plugin {
   const devRoutes: Record<string, string> = {
+    "/dashboard": "/index.html",
+    "/landing": "/pages/landing.html",
     "/privacy-policy": "/pages/privacy-policy.html",
     "/terms-of-service": "/pages/terms-of-service.html",
     "/faqs": "/pages/faqs.html",
   };
   const previewRoutes: Record<string, string> = {
+    "/dashboard": "/index.html",
+    "/landing": "/landing.html",
     "/privacy-policy": "/privacy-policy.html",
     "/terms-of-service": "/terms-of-service.html",
     "/faqs": "/faqs.html",
@@ -151,12 +155,12 @@ function generateFaqArtifacts(): Plugin {
     name: "generate-faq-artifacts",
     transformIndexHtml(html, ctx) {
       const baseName = path.basename(ctx.filename);
-      if (baseName !== "faqs.html" && baseName !== "index.html") return html;
+      if (baseName !== "faqs.html" && baseName !== "landing.html") return html;
 
       const data = loadFaqData();
       const categories = data?.categories ?? [];
 
-      if (baseName === "index.html") {
+      if (baseName === "landing.html") {
         const allItems = categories.flatMap((cat) => cat.faqs);
         const featuredItems = allItems.filter((item) => item.featured);
         const homeItems = featuredItems.length > 0 ? featuredItems : allItems.slice(0, 5);
@@ -164,7 +168,7 @@ function generateFaqArtifacts(): Plugin {
         const homeJsonLdTag = `<script type="application/ld+json">${JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "@id": "https://motofolio.pages.dev/#faq",
+          "@id": "https://motofolio.pages.dev/landing#faq",
           mainEntity: homeItems.map((item) => ({
             "@type": "Question",
             name: item.question,
@@ -295,6 +299,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: path.resolve(process.cwd(), "index.html"),
+          landing: path.resolve(process.cwd(), "pages/landing.html"),
           "privacy-policy": path.resolve(process.cwd(), "pages/privacy-policy.html"),
           "terms-of-service": path.resolve(process.cwd(), "pages/terms-of-service.html"),
           faqs: path.resolve(process.cwd(), "pages/faqs.html"),

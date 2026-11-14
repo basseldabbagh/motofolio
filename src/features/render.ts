@@ -6,7 +6,6 @@ import {
   renderFooterSpecs,
   renderHeaderAndKPIs,
   syncProfileSelectOptions,
-  updateVehicleIcons,
 } from "./headerKpis";
 import { populateLinkedItemSelect, renderHistoryList } from "./history";
 import { renderPeriodicTable } from "./periodicSchedule";
@@ -34,13 +33,6 @@ export function renderAll(): void {
     welcomeView?.classList.remove("hidden");
     dashboardView?.classList.add("hidden");
     syncProfileSelectOptions();
-    updateVehicleIcons("blank-template");
-    const titleEl = document.getElementById("headerCarTitle");
-    if (titleEl) titleEl.textContent = "Vehicle Maintenance";
-    document.getElementById("headerPlateBadge")?.classList.add("hidden");
-    document.getElementById("editVehicleBtn")?.classList.add("hidden");
-    const subEl = document.getElementById("headerEngineSub");
-    if (subEl) subEl.textContent = "No car selected • Pick a template below to get started";
     renderWelcomeTemplates();
     syncFiltersToUrl();
     return;
@@ -48,8 +40,6 @@ export function renderAll(): void {
 
   welcomeView?.classList.add("hidden");
   dashboardView?.classList.remove("hidden");
-  document.getElementById("headerPlateBadge")?.classList.remove("hidden");
-  document.getElementById("editVehicleBtn")?.classList.remove("hidden");
 
   syncCategoryFilterOptions();
   renderHeaderAndKPIs();
