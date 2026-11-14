@@ -1,7 +1,6 @@
 import { getAppData } from "../state/store";
 import { copyTextSafe, formatNumber } from "../utils/format";
 import { computeItemStatus } from "./periodicSchedule";
-import { generateA4HistoryReportTab, generateA4StatusReportTab } from "./reports";
 
 export function buildShareSummaryText(): string {
   const appData = getAppData();
@@ -30,8 +29,34 @@ export function buildShareSummaryText(): string {
     .join("\n");
 }
 
+export function buildPrettyShareUrlText(): string {
+  const appData = getAppData();
+  const url = window.location.href;
+  if (!appData || !appData.vehicle) {
+    return [
+      "My MotoFolio — Universal Vehicle Maintenance Tracker",
+      "Track service intervals, odometer & workshop expenses privately:",
+      url,
+    ].join("\n");
+  }
+  const v = appData.vehicle;
+  const vehicleName = `${v.year || ""} ${v.make || ""} ${v.model || ""}`.trim() || "My Vehicle";
+  const plate = v.plateNumber ? ` (${v.plateNumber})` : "";
+  const curKm = formatNumber(Number(v.currentMileageKm) || 0);
+  return [
+    `My MotoFolio — ${vehicleName}${plate}`,
+    `Odometer: ${curKm} km | Updated: ${appData.lastUpdated || "—"}`,
+    `View dashboard: ${url}`,
+  ].join("\n");
+}
+
 export function initShareListeners(): void {
   const shareModal = document.getElementById("shareModal");
+
+  const closeShareModal = (): void => {
+    shareModal?.classList.add("hidden");
+    shareModal?.classList.remove("flex");
+  };
 
   document.getElementById("openShareModalBtn")?.addEventListener("click", () => {
     const preview = document.getElementById("shareSummaryPreview");
@@ -40,37 +65,40 @@ export function initShareListeners(): void {
     shareModal?.classList.add("flex");
   });
 
-  document.getElementById("closeShareModalBtn")?.addEventListener("click", () => {
-    shareModal?.classList.add("hidden");
-    shareModal?.classList.remove("flex");
+  document.getElementById("closeShareModalBtn")?.addEventListener("click", closeShareModal);
+
+  shareModal?.addEventListener("click", (e) => {
+    if (e.target === shareModal) closeShareModal();
   });
 
-  document.getElementById("shareOpenStatusA4Btn")?.addEventListener("click", () => {
-    shareModal?.classList.add("hidden");
-    shareModal?.classList.remove("flex");
-    generateA4StatusReportTab();
-  });
+  document.getElementById("nativeShareBtn")?.addEventListener("click", async () => {
+    const appData = getAppData();
+    const v = appData?.vehicle;
+    const title = v
+      ? `My MotoFolio — ${v.year || ""} ${v.make || ""} ${v.model || ""}`.trim()
+      : document.title || "My MotoFolio";
+    const text = v
+      ? buildShareSummaryText()
+      : "Track your vehicle maintenance, service intervals & workshop expenses with My MotoFolio.";
+    const url = window.location.href;
 
-  document.getElementById("shareOpenHistoryA4Btn")?.addEventListener("click", () => {
-    shareModal?.classList.add("hidden");
-    shareModal?.classList.remove("flex");
-    generateA4HistoryReportTab();
-  });
-
-  document.getElementById("copyShareTextBtn")?.addEventListener("click", async () => {
-    const text = buildShareSummaryText();
     if (navigator.share) {
       try {
-        await navigator.share({ title: document.title, text, url: window.location.href });
+        await navigator.share({ title, text, url });
         return;
-      } catch {
-        // fallback to copy
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
       }
     }
+    copyTextSafe(`${text}\n\n${url}`, "Native share unavailable — copied summary & link to clipboard!");
+  });
+
+  document.getElementById("copyShareTextBtn")?.addEventListener("click", () => {
+    const text = buildShareSummaryText();
     copyTextSafe(text, "Report text copied for WhatsApp");
   });
 
   document.getElementById("copyShareUrlBtn")?.addEventListener("click", () => {
-    copyTextSafe(window.location.href, "Sharable link with current filters copied to clipboard!");
+    copyTextSafe(buildPrettyShareUrlText(), "Sharable link & summary copied to clipboard!");
   });
 }

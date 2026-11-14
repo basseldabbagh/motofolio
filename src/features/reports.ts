@@ -9,6 +9,60 @@ import {
 import { escapeHtml, formatCurrency, formatNumber, showToast } from "../utils/format";
 import { computeItemStatus } from "./periodicSchedule";
 
+const SHARE_REPORT_BUTTON_HTML = `<button class="btn btn-share" id="shareReportBtn" onclick="shareReport()" style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg><span id="shareReportBtnLabel">Share Report</span></button>`;
+
+function buildReportShareScript(payload: { title: string; text: string; url: string }): string {
+  const safeJson = JSON.stringify(payload).replace(/</g, "\\u003c");
+  return `<script>
+    async function shareReport() {
+      var data = ${safeJson};
+      var btn = document.getElementById("shareReportBtn");
+      var label = document.getElementById("shareReportBtnLabel");
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: data.title, text: data.text, url: data.url });
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+          try {
+            await navigator.share({ title: data.title, text: data.text + "\\n" + data.url });
+            return;
+          } catch (err2) {
+            if (err2 && err2.name === "AbortError") return;
+          }
+        }
+      }
+      var fullText = data.text + "\\n\\n" + data.url;
+      var copied = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(fullText);
+          copied = true;
+        } catch (e) {}
+      }
+      if (!copied) {
+        var ta = document.createElement("textarea");
+        ta.value = fullText;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { copied = document.execCommand("copy"); } catch (e) {}
+        ta.remove();
+      }
+      if (copied && label) {
+        var prev = label.textContent;
+        label.textContent = "Copied!";
+        if (btn) btn.disabled = true;
+        setTimeout(function () {
+          label.textContent = prev;
+          if (btn) btn.disabled = false;
+        }, 2000);
+      }
+    }
+  </script>`;
+}
+
 export function openReportInNewTab(html: string): void {
   const win = window.open("", "_blank");
   if (win) {
@@ -79,6 +133,20 @@ export function generateA4StatusReportTab(): void {
     })
     .join("");
 
+  const statusShareText = [
+    `My MotoFolio — Vehicle Status & Condition Report`,
+    `${v.year || ""} ${v.make || ""} ${v.model || ""} (${v.plateNumber || "NO PLATE"})`.trim(),
+    `Odometer: ${formatNumber(curKm)} km | Condition: ${overallCondition.label}`,
+    `Schedule Health: ${goodCount} OK • ${soonCount} Due Soon • ${overdueCount} Overdue (${sched.length} tracked)`,
+    `Report Date: ${appData.lastUpdated || new Date().toISOString().slice(0, 10)}`,
+  ].join("\n");
+
+  const statusShareScript = buildReportShareScript({
+    title: `${v.year || ""} ${v.make || ""} ${v.model || ""} — Vehicle Status Report`.trim(),
+    text: statusShareText,
+    url: window.location.href,
+  });
+
   const reportHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,9 +157,12 @@ export function generateA4StatusReportTab(): void {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif; color: #0f172a; background: #f1f5f9; padding: 24px; font-size: 12px; line-height: 1.4; }
     .page { max-width: 210mm; margin: 0 auto; background: #ffffff; padding: 14mm; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .toolbar { max-width: 210mm; margin: 0 auto 14px auto; display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 8px; }
+    .toolbar { max-width: 210mm; margin: 0 auto 14px auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 8px; }
+    .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .btn { background: #4f46e5; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }
     .btn:hover { background: #4338ca; }
+    .btn-share { background: #334155; }
+    .btn-share:hover { background: #475569; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; }
     .title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
     .subtitle { color: #475569; font-size: 12px; margin-top: 2px; }
@@ -118,7 +189,10 @@ export function generateA4StatusReportTab(): void {
 <body>
   <div class="toolbar">
     <span><strong>Vehicle Status &amp; Condition Report</strong> — Ready to Save as A4 PDF</span>
-    <button class="btn" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print / Save as A4 PDF</button>
+    <div class="toolbar-actions">
+      ${SHARE_REPORT_BUTTON_HTML}
+      <button class="btn" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print / Save as A4 PDF</button>
+    </div>
   </div>
   <div class="page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -178,6 +252,7 @@ export function generateA4StatusReportTab(): void {
       <span>My MotoFolio Private Client-Side Vehicle Report • ${new Date().toLocaleDateString()}</span>
     </div>
   </div>
+  ${statusShareScript}
 </body>
 </html>`;
 
@@ -249,6 +324,20 @@ export function generateA4HistoryReportTab(): void {
     )
     .join("");
 
+  const historyShareText = [
+    `My MotoFolio — Service History & Expense Report`,
+    `${v.year || ""} ${v.make || ""} ${v.model || ""} (${v.plateNumber || "NO PLATE"})`.trim(),
+    `Odometer: ${formatNumber(curKm)} km | Filter: ${filterSummaryStr}`,
+    `Records: ${sortedHist.length} | Total Expense: ${formatCurrency(totalCost, appData.currency)} | Settled: ${formatCurrency(totalPaid, appData.currency)}`,
+    `Report Date: ${appData.lastUpdated || new Date().toISOString().slice(0, 10)}`,
+  ].join("\n");
+
+  const historyShareScript = buildReportShareScript({
+    title: `${v.year || ""} ${v.make || ""} ${v.model || ""} — Service History Report`.trim(),
+    text: historyShareText,
+    url: window.location.href,
+  });
+
   const reportHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -259,9 +348,12 @@ export function generateA4HistoryReportTab(): void {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif; color: #0f172a; background: #f1f5f9; padding: 24px; font-size: 12px; line-height: 1.4; }
     .page { max-width: 210mm; margin: 0 auto; background: #ffffff; padding: 14mm; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-    .toolbar { max-width: 210mm; margin: 0 auto 14px auto; display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 8px; }
+    .toolbar { max-width: 210mm; margin: 0 auto 14px auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #0f172a; color: #fff; padding: 10px 16px; border-radius: 8px; }
+    .toolbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .btn { background: #059669; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }
     .btn:hover { background: #047857; }
+    .btn-share { background: #334155; }
+    .btn-share:hover { background: #475569; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; }
     .title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
     .subtitle { color: #475569; font-size: 12px; margin-top: 2px; }
@@ -286,7 +378,10 @@ export function generateA4HistoryReportTab(): void {
 <body>
   <div class="toolbar">
     <span><strong>Workshop Service History &amp; Expense Report</strong> — Ready to Save as A4 PDF</span>
-    <button class="btn" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print / Save as A4 PDF</button>
+    <div class="toolbar-actions">
+      ${SHARE_REPORT_BUTTON_HTML}
+      <button class="btn" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print / Save as A4 PDF</button>
+    </div>
   </div>
   <div class="page">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -344,6 +439,7 @@ export function generateA4HistoryReportTab(): void {
       <span>My MotoFolio Private Client-Side Vehicle Report • ${new Date().toLocaleDateString()}</span>
     </div>
   </div>
+  ${historyShareScript}
 </body>
 </html>`;
 

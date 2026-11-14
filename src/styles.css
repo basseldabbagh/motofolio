@@ -564,3 +564,8 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
 html:not(.dark) ::-webkit-scrollbar-thumb:hover {
   background: #ff6b35;
 }
+
+/* Prevent scroll chaining from open modals to background page */
+[aria-modal="true"] {
+  overscroll-behavior: contain;
+}

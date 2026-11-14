@@ -26,12 +26,14 @@ export function renderFilterDependentViews(): void {
 export function renderAll(): void {
   const welcomeView = document.getElementById("emptyGarageWelcomeView");
   const dashboardView = document.getElementById("vehicleDashboardView");
+  const settingsReportsSection = document.getElementById("settingsReportsSection");
   const appData = getAppData();
   const hasCars = hasSavedCars() && Boolean(appData && appData.vehicle);
 
   if (!hasCars) {
     welcomeView?.classList.remove("hidden");
     dashboardView?.classList.add("hidden");
+    settingsReportsSection?.classList.add("hidden");
     syncProfileSelectOptions();
     renderWelcomeTemplates();
     syncFiltersToUrl();
@@ -40,6 +42,7 @@ export function renderAll(): void {
 
   welcomeView?.classList.add("hidden");
   dashboardView?.classList.remove("hidden");
+  settingsReportsSection?.classList.remove("hidden");
 
   syncCategoryFilterOptions();
   renderHeaderAndKPIs();

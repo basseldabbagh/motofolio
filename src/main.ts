@@ -30,6 +30,7 @@ import {
   setAppData,
 } from "./state/store";
 import { updateDynamicSEO } from "./utils/seo";
+import { initModalScrollLock } from "./utils/modalScrollLock";
 import { initGlobalFilterListeners, restoreFiltersFromUrl } from "./utils/urlFilters";
 
 // Configure Tailwind CDN & initial theme class immediately
@@ -110,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initShareListeners();
   initGoogleDriveListeners(renderAll);
   initVehicleAndSettingsListeners(renderAll);
+  initModalScrollLock();
   initCookieConsent();
   initPwaInstall();
   initWebMcpTools();
