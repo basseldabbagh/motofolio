@@ -36,18 +36,18 @@
 | **Typography** | Google Fonts: `Inter` (sans) and `JetBrains Mono` (code/numbers) | `<link href="https://fonts.googleapis.com/css2?...">` |
 | **Logic & Scripting** | Modular TypeScript (ES2020+, Strict Mode) via Vite | [`src/main.ts`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/main.ts), [`src/features/`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/features/) |
 | **Visualizations** | Native SVG DOM generation (No Chart.js, D3, or Canvas) | Functions `renderCountdownChart()`, `renderExpenseDonut()` |
-| **Storage / Persistence** | Browser `localStorage` (JSON strings) | Keys `autolog_active_profile`, `autolog_car_${id}` |
-| **Progressive Web App** | Web App Manifest & Service Worker (Offline Cache) | [`manifest.json`](file:///e:/HTML/autolog/manifest.json), [`sw.js`](file:///e:/HTML/autolog/sw.js) |
+| **Storage / Persistence** | Browser `localStorage` (JSON strings) | Keys `car_tracker_v3_active_profile`, `car_tracker_v3_custom_profiles`, `car_tracker_v3_${id}`, `motofolio_user_profile` |
+| **Progressive Web App** | Web App Manifest & Service Worker (Offline Cache) | [`manifest.json`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/manifest.json), [`sw.js`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/sw.js) |
 | **Interchange Formats** | Custom CSV Parser/Serializer & JSON Schema v2.0 | Functions `buildCsvFromData()`, `parseCsvText()` |
 | **Print / PDF Engine** | Browser Print Engine (`@media print` in dynamic HTML document) | Functions `generateA4StatusReportTab()`, `generateA4HistoryReportTab()` |
-| **License** | MIT License (Public for all developers) | [`LICENSE.md`](file:///e:/HTML/autolog/LICENSE.md) |
+| **License** | MIT License (Public for all developers) | [`LICENSE.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/LICENSE.md) |
 
 ---
 
 ## 3. Repository Structure & Directory Roles
 
 ```
-autolog/
+motofolio/
 ├── index.html               # Authoritative web application: contains UI markup, CSS, JS, templates
 ├── favicon.svg              # Scalable vector favicon & PWA icon
 ├── og-image.svg             # High-resolution (1200x630) social share Open Graph & Twitter Card banner
@@ -90,15 +90,15 @@ The repository contains a dedicated `instructions/` directory with specialized A
 
 | File Path | Purpose | Scope | When Agents Must Read | Precedence |
 |---|---|---|---|---|
-| [`instructions/project-documentation-architect.md`](file:///e:/HTML/autolog/instructions/project-documentation-architect.md) | Standardizes repository-level documentation (`AGENTS.md`, `README.md`, `DESIGN.md`). | Repository root and global project architecture. | When creating, auditing, or refactoring repository-wide documentation files. | Highest for project documentation. |
-| [`instructions/attached-file-documentation-architect.md`](file:///e:/HTML/autolog/instructions/attached-file-documentation-architect.md) | Standardizes deep documentation for individual attached files or isolated components. | Single-file or folder-specific additions. | When documenting a new standalone script, component, or data file. | Subservient to project documentation guidelines. |
-| [`instructions/UI-UX skill.md`](file:///e:/HTML/autolog/instructions/UI-UX%20skill.md) | Dictates design system analysis, color palettes, visual hierarchies, and responsive UI. | Frontend presentation, Tailwind styling, and accessibility. | When modifying UI components, modals, color schemes, or creating `DESIGN.md`. | Authoritative for visual and UI/UX conventions. |
+| [`instructions/project-documentation-architect.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/project-documentation-architect.md) | Standardizes repository-level documentation (`AGENTS.md`, `README.md`, `DESIGN.md`). | Repository root and global project architecture. | When creating, auditing, or refactoring repository-wide documentation files. | Highest for project documentation. |
+| [`instructions/attached-file-documentation-architect.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/attached-file-documentation-architect.md) | Standardizes deep documentation for individual attached files or isolated components. | Single-file or folder-specific additions. | When documenting a new standalone script, component, or data file. | Subservient to project documentation guidelines. |
+| [`instructions/UI-UX skill.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/UI-UX%20skill.md) | Dictates design system analysis, color palettes, visual hierarchies, and responsive UI. | Frontend presentation, Tailwind styling, and accessibility. | When modifying UI components, modals, color schemes, or creating `DESIGN.md`. | Authoritative for visual and UI/UX conventions. |
 
 ---
 
 ## 5. Development Workflow & Commands
 
-Because AutoLog has no Node.js dependencies, development requires no compilation, transpilation, or packaging steps.
+Because MotoFolio uses Vite + TypeScript, install dependencies (`npm install`) and run `npm run dev` for local development or `npm run build` for production.
 
 ### Starting Local Development
 Run an HTTP server from the project root to enable full Web APIs (such as `fetch()` and Web Share API):
@@ -136,7 +136,7 @@ When introducing code changes:
 - All active application state is kept in the global object `let appData = null;`.
 - The active vehicle profile identifier is stored in `let activeProfileKey` (e.g. `'sample-sedan'` or the loaded profile ID).
 - Always mutate `appData` directly and then call `saveToLocal(true)` followed by `renderAll()`.
-- `saveToLocal(touchDate)` automatically updates `appData.lastUpdated` to today's date (`YYYY-MM-DD`) and writes to `localStorage.setItem('autolog_car_' + activeProfileKey, JSON.stringify(appData))`.
+- `saveToLocal(touchDate)` automatically updates `appData.lastUpdated` to today's date (`YYYY-MM-DD`) and writes to `localStorage.setItem('car_tracker_v3_' + activeProfileKey, JSON.stringify(appData))`.
 
 ### 2. Status Calculation Logic
 Maintenance item status is determined by the difference between `nextDueKm` and `currentMileageKm`:

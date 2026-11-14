@@ -1,7 +1,7 @@
 # DESIGN.md — MotoFolio UI/UX Design System & Architecture
 
 > **Document Scope**: Complete visual design specifications, color tokens, typography systems, component hierarchy, interaction patterns, and printable layout architecture for the **MotoFolio** vehicle maintenance application.
-> **Source of Truth**: [`index.html`](file:///e:/HTML/autolog/index.html) and [`instructions/UI-UX skill.md`](file:///e:/HTML/autolog/instructions/UI-UX%20skill.md).
+> **Source of Truth**: [`index.html`](file:///e:/HTML/Bhoenix%20studio/motofolio/index.html) and [`instructions/UI-UX skill.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/UI-UX%20skill.md).
 
 ---
 
