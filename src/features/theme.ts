@@ -12,7 +12,11 @@ export function updateThemeIdentityAssets(isDark: boolean): void {
 
     faviconEls.forEach((el) => {
       el.removeAttribute("media");
-      el.href = isDark ? "/images/identity/favicon-light.png" : "/images/identity/favicon.png";
+      if (el.type === "image/x-icon" || el.href.endsWith(".ico")) {
+        el.href = isDark ? "/images/identity/favicon-light.ico" : "/images/identity/favicon.ico";
+      } else {
+        el.href = isDark ? "/images/identity/favicon-light.png" : "/images/identity/favicon.png";
+      }
     });
 
     if (touchIconEl) {

@@ -136,7 +136,6 @@
 .spinning,
 .spininng {
   animation: spinSlow 1s linear infinite;
-  display: inline-block;
   transform-origin: center center;
 }
 

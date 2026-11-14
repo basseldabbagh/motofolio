@@ -1,10 +1,11 @@
-const CACHE_NAME = 'motofolio-v3';
+const CACHE_NAME = 'motofolio-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './favicon.svg',
   './og-image.svg',
+  './images/identity/favicon.ico',
+  './images/identity/favicon-light.ico',
   './images/identity/favicon.png',
   './images/identity/favicon-light.png',
   './images/identity/appicon.png',

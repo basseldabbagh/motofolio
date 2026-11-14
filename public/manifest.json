@@ -14,13 +14,13 @@
   "icons": [
     {
       "src": "/images/identity/icon.png",
-      "sizes": "192x192 512x512 1024x1024",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "/images/identity/appicon.png",
-      "sizes": "192x192 512x512 1024x1024",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     },
@@ -40,7 +40,7 @@
       "icons": [
         {
           "src": "/images/identity/icon.png",
-          "sizes": "192x192",
+          "sizes": "1024x1024",
           "type": "image/png"
         }
       ]
@@ -53,7 +53,7 @@
       "icons": [
         {
           "src": "/images/identity/icon.png",
-          "sizes": "192x192",
+          "sizes": "1024x1024",
           "type": "image/png"
         }
       ]
