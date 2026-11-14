@@ -10,7 +10,7 @@
 
 - **What the Project Does**: MotoFolio is a standalone, client-side web application designed to track vehicle maintenance schedules, periodic fluid and part replacement intervals, odometer simulation, workshop service invoices, parts costs, and export/import data via CSV and JSON. It also generates print-ready A4 condition inspection reports and WhatsApp-ready summaries.
 - **Target Users**: Vehicle owners, car enthusiasts, DIY mechanics, independent automotive workshop operators, and fleet coordinators.
-- **Project Type**: Single-page, client-side web application (SPA) with pure HTML markup in [`index.html`](file:///e:/HTML/Bhoenix%20studio/motofolio/index.html), modular TypeScript feature files and a single custom stylesheet in [`src/`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/), bundled via Vite, and accompanied by standalone JSON vehicle profile definitions in [`cars/`](file:///e:/HTML/Bhoenix%20studio/motofolio/cars/) and [`template/`](file:///e:/HTML/Bhoenix%20studio/motofolio/template/).
+- **Project Type**: Single-page, client-side web application (SPA) with pure HTML markup in [`index.html`](index.html), modular TypeScript feature files and a single custom stylesheet in [`src/`](src/), bundled via Vite, and accompanied by standalone JSON vehicle profile definitions in [`cars/`](cars/) and [`template/`](template/).
 - **Major Capabilities**:
   1. Multi-vehicle profile switching (built-in sample profiles plus custom dynamic profiles).
   2. Dynamic odometer adjustment with fast increment steps (`+1k`, `+5k`) and reset capabilities.
@@ -31,16 +31,16 @@
 
 | Layer | Technology | Direct File Evidence |
 |---|---|---|
-| **Markup & Structure** | HTML5 (Semantic elements, Dialogs/Modals, SVG) | [`index.html`](file:///e:/HTML/Bhoenix%20studio/motofolio/index.html) |
-| **Styling & Theme** | Tailwind CSS (CDN `v3.x`) + single custom stylesheet | `<script src="https://cdn.tailwindcss.com">`, [`src/styles.css`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/styles.css) |
+| **Markup & Structure** | HTML5 (Semantic elements, Dialogs/Modals, SVG) | [`index.html`](index.html) |
+| **Styling & Theme** | Tailwind CSS (CDN `v3.x`) + single custom stylesheet | `<script src="https://cdn.tailwindcss.com">`, [`src/styles.css`](src/styles.css) |
 | **Typography** | Google Fonts: `Inter` (sans) and `JetBrains Mono` (code/numbers) | `<link href="https://fonts.googleapis.com/css2?...">` |
-| **Logic & Scripting** | Modular TypeScript (ES2020+, Strict Mode) via Vite | [`src/main.ts`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/main.ts), [`src/features/`](file:///e:/HTML/Bhoenix%20studio/motofolio/src/features/) |
+| **Logic & Scripting** | Modular TypeScript (ES2020+, Strict Mode) via Vite | [`src/main.ts`](src/main.ts), [`src/features/`](src/features/) |
 | **Visualizations** | Native SVG DOM generation (No Chart.js, D3, or Canvas) | Functions `renderCountdownChart()`, `renderExpenseDonut()` |
 | **Storage / Persistence** | Browser `localStorage` (JSON strings) | Keys `car_tracker_v3_active_profile`, `car_tracker_v3_custom_profiles`, `car_tracker_v3_${id}`, `motofolio_user_profile` |
-| **Progressive Web App** | Web App Manifest & Service Worker (Offline Cache) | [`manifest.json`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/manifest.json), [`sw.js`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/sw.js) |
+| **Progressive Web App** | Web App Manifest & Service Worker (Offline Cache) | [`public/manifest.json`](public/manifest.json), [`public/sw.js`](public/sw.js) |
 | **Interchange Formats** | Custom CSV Parser/Serializer & JSON Schema v2.0 | Functions `buildCsvFromData()`, `parseCsvText()` |
 | **Print / PDF Engine** | Browser Print Engine (`@media print` in dynamic HTML document) | Functions `generateA4StatusReportTab()`, `generateA4HistoryReportTab()` |
-| **License** | MIT License (Public for all developers) | [`LICENSE.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/LICENSE.md) |
+| **License** | MIT License (Public for all developers) | [`LICENSE.md`](LICENSE.md) |
 
 ---
 
@@ -90,9 +90,9 @@ The repository contains a dedicated `instructions/` directory with specialized A
 
 | File Path | Purpose | Scope | When Agents Must Read | Precedence |
 |---|---|---|---|---|
-| [`instructions/project-documentation-architect.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/project-documentation-architect.md) | Standardizes repository-level documentation (`AGENTS.md`, `README.md`, `DESIGN.md`). | Repository root and global project architecture. | When creating, auditing, or refactoring repository-wide documentation files. | Highest for project documentation. |
-| [`instructions/attached-file-documentation-architect.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/attached-file-documentation-architect.md) | Standardizes deep documentation for individual attached files or isolated components. | Single-file or folder-specific additions. | When documenting a new standalone script, component, or data file. | Subservient to project documentation guidelines. |
-| [`instructions/UI-UX skill.md`](file:///e:/HTML/Bhoenix%20studio/motofolio/instructions/UI-UX%20skill.md) | Dictates design system analysis, color palettes, visual hierarchies, and responsive UI. | Frontend presentation, Tailwind styling, and accessibility. | When modifying UI components, modals, color schemes, or creating `DESIGN.md`. | Authoritative for visual and UI/UX conventions. |
+| [`instructions/project-documentation-architect.md`](instructions/project-documentation-architect.md) | Standardizes repository-level documentation (`AGENTS.md`, `README.md`, `DESIGN.md`). | Repository root and global project architecture. | When creating, auditing, or refactoring repository-wide documentation files. | Highest for project documentation. |
+| [`instructions/attached-file-documentation-architect.md`](instructions/attached-file-documentation-architect.md) | Standardizes deep documentation for individual attached files or isolated components. | Single-file or folder-specific additions. | When documenting a new standalone script, component, or data file. | Subservient to project documentation guidelines. |
+| [`instructions/UI-UX skill.md`](instructions/UI-UX%20skill.md) | Dictates design system analysis, color palettes, visual hierarchies, and responsive UI. | Frontend presentation, Tailwind styling, and accessibility. | When modifying UI components, modals, color schemes, or creating `DESIGN.md`. | Authoritative for visual and UI/UX conventions. |
 
 ---
 

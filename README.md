@@ -41,7 +41,7 @@ All data is stored client-side in the browser's `localStorage` and can be export
 
 ## ⚡ Key Features
 
-- **📱 Progressive Web App (PWA)**: Installable directly to home screens on iOS, Android, macOS, and Windows via [`manifest.json`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/manifest.json) and [`sw.js`](file:///e:/HTML/Bhoenix%20studio/motofolio/public/sw.js) with full offline caching.
+- **📱 Progressive Web App (PWA)**: Installable directly to home screens on iOS, Android, macOS, and Windows via [`public/manifest.json`](public/manifest.json) and [`public/sw.js`](public/sw.js) with full offline caching.
 - **🔍 Global Dashboard Filters**: Slice analytics and expense charts by time period (*This Year*, *Last Year*, *Last 6 Months*, *All Time*, or *Custom Date Range*) and service category with instant recalculation.
 - **🚗 Clean Slate & Ad-Free Vehicle Onboarding**: No default vehicles seeded and zero commercial vehicle advertisements or fake data. When starting fresh or when no cars exist in storage, MotoFolio displays an onboarding hub of vehicle archetype templates (Sedan, SUV, Hatchback, Truck 4x4, Sports Coupe, EV, Hybrid, MPV, or Blank) to pick and customize with your own make and model, alongside quick Google Sign-In and CSV/JSON Import/Export actions.
 - **🔗 Sharable Filter Sync in URL**: Active vehicle profile, dashboard date period preset, custom date ranges, category filters, periodic schedule status tabs, and history search queries are automatically synchronized with the URL query parameters (`?car=...&period=...&cat=...&sched=...&q=...`) for instant bookmarking and one-click shareable filtered views.
@@ -76,7 +76,7 @@ All data is stored client-side in the browser's `localStorage` and can be export
 ## 🚀 Live Demo & Quick Start
 
 ### Option 1: Open Directly in Browser
-Double-click [`index.html`](file:///e:/HTML/Bhoenix%20studio/motofolio/index.html) or open it with any web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari). No web server required!
+Double-click [`index.html`](index.html) or open it with any web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari). No web server required!
 
 ### Option 2: Run with a Local Static Server
 
@@ -169,7 +169,7 @@ Clicking **Share** opens a modal containing:
 The header features a real-time Google Account button with connection status:
 - **Connection Status Indicator**: Displays an emerald status dot and "Connected" when signed in via Google OAuth 2.0, or a slate dot and "Not Connected" when disconnected.
 - **Drive Sync Modal**: Toggle auto-sync on changes, select or create destination folders (`MotoFolio` or custom folders), push current vehicle records to your personal Google Drive, or pull and restore vehicles across browsers.
-- **Developer 1-Click Setup**: Set `GOOGLE_CLIENT_ID` once in [`config.js`](file:///e:/HTML/Bhoenix%20studio/motofolio/config.js) (or see [`.env.example`](file:///e:/HTML/Bhoenix%20studio/motofolio/.env.example)). Normal users simply click "Sign in with Google" to connect their Google Drive with 1 click without entering any API key or technical settings.
+- **Developer 1-Click Setup**: Set `GOOGLE_CLIENT_ID` once in [`config.js`](config.js) (or see [`.env.example`](.env.example)). Normal users simply click "Sign in with Google" to connect their Google Drive with 1 click without entering any API key or technical settings.
 
 ---
 
@@ -251,12 +251,12 @@ The application exports a unified CSV document containing three logical record s
 
 ## 🛠️ Development & Customization
 
-- **Design System Tokens (CSS Variables)**: All theme colors (backgrounds, surfaces, borders, brand colors, semantic statuses `Good`, `Due Soon`, `Overdue`, and chart palettes) are defined as CSS Custom Properties in `:root`. You can re-theme the entire application without touching HTML markup by modifying the `:root` variables in [`index.html`](file:///e:/HTML/motofolio/index.html).
+- **Design System Tokens (CSS Variables)**: All theme colors (backgrounds, surfaces, borders, brand colors, semantic statuses `Good`, `Due Soon`, `Overdue`, and chart palettes) are defined as CSS Custom Properties in `:root`. You can re-theme the entire application without touching HTML markup by modifying the `:root` variables in [`src/styles.css`](src/styles.css).
 - **Unified SVG Icon System (Zero Emojis)**: The UI adheres to professional design standards by using unified stroke-based SVG vector icons (`viewBox="0 0 24 24"`, `stroke="currentColor"`) for all vehicle types, status badges, action buttons, and modal dialogs.
 - **No Node.js or Build Tools**: No `npm install`, `webpack`, or `vite` required. Runs directly from `file://` or any static HTTP server.
 - **Styling**: Uses Tailwind CSS via CDN (`https://cdn.tailwindcss.com`) configured with dark mode and theme aliases for design tokens.
 - **Typography**: Uses Google Fonts (`Inter` and `JetBrains Mono`).
-- **Editing**: Open [`index.html`](file:///e:/HTML/motofolio/index.html) in your editor (VS Code, Cursor, etc.), edit markup or JavaScript, and refresh your browser.
+- **Editing**: Open [`index.html`](index.html) in your editor (VS Code, Cursor, etc.), edit markup or TypeScript in [`src/`](src/), and refresh your browser.
 
 ---
 
@@ -273,4 +273,4 @@ The application exports a unified CSV document containing three logical record s
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — free and open for personal, commercial, and educational use by all developers worldwide. See [`LICENSE.md`](file:///e:/HTML/motofolio/LICENSE.md) for full terms.
+This project is licensed under the **MIT License** — free and open for personal, commercial, and educational use by all developers worldwide. See [`LICENSE.md`](LICENSE.md) for full terms.
