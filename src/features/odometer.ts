@@ -1,6 +1,7 @@
 import { BUILTIN_PROFILES } from "../config/profiles";
 import { getActiveProfileKey, getAppData, saveToLocal } from "../state/store";
 import { formatNumber, showToast } from "../utils/format";
+import { analytics } from "./analytics";
 
 export function initOdometerListeners(
   onLiveUpdate: () => void,
@@ -17,6 +18,13 @@ export function initOdometerListeners(
     }
   });
 
+  document.getElementById("currentMileageInput")?.addEventListener("change", (e) => {
+    const val = Number((e.target as HTMLInputElement).value);
+    if (!isNaN(val) && val >= 0) {
+      analytics.event("odometer_updated", { mileage_km: val, method: "manual" });
+    }
+  });
+
   document.querySelectorAll<HTMLButtonElement>(".km-step-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const appData = getAppData();
@@ -25,6 +33,11 @@ export function initOdometerListeners(
       appData.vehicle.currentMileageKm = (Number(appData.vehicle.currentMileageKm) || 0) + step;
       saveToLocal(true);
       onFullRender();
+      analytics.event("odometer_updated", {
+        mileage_km: appData.vehicle.currentMileageKm,
+        step_km: step,
+        method: "step_button",
+      });
       showToast(`Odometer: ${formatNumber(appData.vehicle.currentMileageKm)} km`);
     });
   });
@@ -37,6 +50,7 @@ export function initOdometerListeners(
     appData.vehicle.currentMileageKm = defKm;
     saveToLocal(true);
     onFullRender();
+    analytics.event("odometer_reset", { mileage_km: defKm });
     showToast("Odometer reset");
   });
 }

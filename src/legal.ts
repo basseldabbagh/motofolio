@@ -1,4 +1,5 @@
 import { initTailwindConfig } from "./config/tailwind";
+import { analytics } from "./features/analytics";
 import { initCookieConsent } from "./features/cookieConsent";
 import { initPwaInstall } from "./features/pwaInstall";
 import { applyInitialThemeClass, initThemeFeature } from "./features/theme";
@@ -8,6 +9,8 @@ applyInitialThemeClass();
 initTailwindConfig();
 
 document.addEventListener("DOMContentLoaded", () => {
+  analytics.init();
+  analytics.event("page_view", { page: "legal" });
   initThemeFeature();
   initCookieConsent();
   initPwaInstall();

@@ -1,5 +1,6 @@
 import { getAppData } from "../state/store";
 import { copyTextSafe, formatNumber } from "../utils/format";
+import { analytics } from "./analytics";
 import { computeItemStatus } from "./periodicSchedule";
 
 export function buildShareSummaryText(): string {
@@ -63,6 +64,7 @@ export function initShareListeners(): void {
     if (preview) preview.textContent = buildShareSummaryText();
     shareModal?.classList.remove("hidden");
     shareModal?.classList.add("flex");
+    analytics.event("share_modal_opened");
   });
 
   document.getElementById("closeShareModalBtn")?.addEventListener("click", closeShareModal);
@@ -85,20 +87,24 @@ export function initShareListeners(): void {
     if (navigator.share) {
       try {
         await navigator.share({ title, text, url });
+        analytics.event("share_triggered", { method: "native" });
         return;
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
       }
     }
     copyTextSafe(`${text}\n\n${url}`, "Native share unavailable — copied summary & link to clipboard!");
+    analytics.event("share_triggered", { method: "native_fallback_copy" });
   });
 
   document.getElementById("copyShareTextBtn")?.addEventListener("click", () => {
     const text = buildShareSummaryText();
     copyTextSafe(text, "Report text copied for WhatsApp");
+    analytics.event("share_triggered", { method: "whatsapp_text" });
   });
 
   document.getElementById("copyShareUrlBtn")?.addEventListener("click", () => {
     copyTextSafe(buildPrettyShareUrlText(), "Sharable link & summary copied to clipboard!");
+    analytics.event("share_triggered", { method: "share_link" });
   });
 }

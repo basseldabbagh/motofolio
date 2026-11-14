@@ -1,5 +1,6 @@
 import type { ThemeMode } from "../types";
 import { showToast } from "../utils/format";
+import { analytics } from "./analytics";
 
 const THEME_STORAGE_KEY = "myMotofolio_theme_mode";
 
@@ -84,6 +85,7 @@ export function initThemeFeature(): void {
     btn.addEventListener("click", () => {
       const chosen = (btn.getAttribute("data-theme") || "system") as ThemeMode;
       applyThemePreference(chosen);
+      analytics.event("theme_changed", { theme: chosen });
       showToast(`Theme set to ${chosen.charAt(0).toUpperCase() + chosen.slice(1)}`);
     });
   });

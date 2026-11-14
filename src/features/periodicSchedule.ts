@@ -2,6 +2,7 @@ import { getAppData, getCurrentScheduleFilter, saveToLocal, setCurrentScheduleFi
 import type { ItemConditionState, ItemStatusResult, PeriodicScheduleItem, ScheduleFilter } from "../types";
 import { escapeHtml, formatNumber, getSelectOrOtherVal, showToast, wireSelectOther } from "../utils/format";
 import { syncFiltersToUrl } from "../utils/urlFilters";
+import { analytics } from "./analytics";
 
 export function computeItemStatus(item: PeriodicScheduleItem, currentMileage: number): ItemStatusResult {
   const lastKm = item.lastServicedKm;
@@ -429,6 +430,7 @@ export function initPeriodicScheduleListeners(onRenderTable: () => void, onRende
 
     saveToLocal(true);
     onRenderAll();
+    analytics.event("schedule_item_added", { category, interval_km: intervalKm });
     (e.target as HTMLFormElement).reset();
     closeSchedModal();
     showToast("Schedule item added");

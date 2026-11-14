@@ -7,6 +7,7 @@ import {
 } from "../state/store";
 import { escapeHtml, formatCurrency, formatNumber, getSelectOrOtherVal, showToast, wireSelectOther } from "../utils/format";
 import { syncFiltersToUrl } from "../utils/urlFilters";
+import { analytics } from "./analytics";
 
 export function renderHistoryList(): void {
   const appData = getAppData();
@@ -306,6 +307,7 @@ export function initHistoryListeners(onRenderAll: () => void): void {
 
     saveToLocal(true);
     onRenderAll();
+    analytics.event("service_record_added", { linked_item: Boolean(linkedItemId) });
     (e.target as HTMLFormElement).reset();
     closeAddModal();
     showToast("Record added & saved");

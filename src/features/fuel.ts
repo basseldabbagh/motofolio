@@ -1,6 +1,7 @@
 import { getAppData, saveToLocal } from "../state/store";
 import type { FuelEntryComputed, FuelLog, FuelStats } from "../types";
 import { escapeHtml, formatNumber, showToast } from "../utils/format";
+import { analytics } from "./analytics";
 
 export function getFuelLogs(): FuelLog[] {
   const appData = getAppData();
@@ -317,6 +318,7 @@ export function initFuelListeners(onRenderAll: () => void): void {
 
     saveToLocal(true);
     onRenderAll();
+    analytics.event("fuel_receipt_added", { full_tank: fFullTank });
     closeFuelReceiptModal();
     showToast("Fuel receipt logged & saved");
   });
@@ -331,6 +333,7 @@ export function initFuelListeners(onRenderAll: () => void): void {
     ];
     saveToLocal(true);
     renderFuelEfficiencySection();
+    analytics.event("sample_fuel_loaded");
     showToast("Loaded sample fuel logs");
   });
 }

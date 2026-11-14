@@ -10,6 +10,7 @@ import {
 } from "../state/store";
 import type { VehicleProfile } from "../types";
 import { copyTextSafe, showToast, triggerDownload } from "../utils/format";
+import { analytics } from "./analytics";
 
 export function escapeCsvCell(val: unknown): string {
   if (val === null || val === undefined) return "";
@@ -305,6 +306,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
       },
     ];
     triggerDownload(buildCsvFromData(templateData), "car-maintenance-template.csv", "text/csv;charset=utf-8;");
+    analytics.event("data_exported", { format: "csv", type: "template" });
   });
 
   document.getElementById("exportCurrentCsvBtn")?.addEventListener("click", () => {
@@ -315,6 +317,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
     }
     const filename = ((appData.vehicle.id || "car-maintenance") + ".csv").toLowerCase();
     triggerDownload(buildCsvFromData(appData), filename, "text/csv;charset=utf-8;");
+    analytics.event("data_exported", { format: "csv", type: "vehicle" });
   });
 
   document.getElementById("csvFileInput")?.addEventListener("change", (e) => {
@@ -331,6 +334,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
         registerCustomProfileOption(key, `${importedData.vehicle.make} ${importedData.vehicle.model}`);
         saveToLocal(true);
         onRenderAll();
+        analytics.event("data_imported", { format: "csv" });
         if (csvStatusMsg) {
           csvStatusMsg.textContent = `Imported & saved "${file.name}" to localStorage.`;
           csvStatusMsg.className = "font-mono text-xs pt-1 text-emerald-400";
@@ -351,6 +355,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
   document.getElementById("downloadJsonTemplateBtn")?.addEventListener("click", () => {
     const templateData = JSON.parse(JSON.stringify(BUILTIN_PROFILES["blank-template"]));
     triggerDownload(JSON.stringify(templateData, null, 2), "car-maintenance-template.json", "application/json");
+    analytics.event("data_exported", { format: "json", type: "template" });
   });
 
   document.getElementById("jsonFileInput")?.addEventListener("change", (e) => {
@@ -372,6 +377,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
         saveToLocal(true);
         if (jsonTextarea) jsonTextarea.value = JSON.stringify(parsed, null, 2);
         onRenderAll();
+        analytics.event("data_imported", { format: "json" });
         showToast("JSON imported & saved");
       } catch (err) {
         if (jsonErrorMsg) {
@@ -392,6 +398,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
     saveToLocal(true);
     const filename = (appData.vehicle.id || "car-maintenance") + ".json";
     triggerDownload(JSON.stringify(appData, null, 2), filename, "application/json");
+    analytics.event("data_exported", { format: "json", type: "vehicle" });
   });
 
   document.getElementById("copyJsonBtn")?.addEventListener("click", () => {

@@ -5,6 +5,7 @@
  */
 
 import { showToast } from "../utils/format";
+import { analytics } from "./analytics";
 
 const PWA_DISMISSED_KEY = "myMotofolio_pwa_install_dismissed";
 
@@ -107,6 +108,7 @@ export function initPwaInstall(): void {
   window.addEventListener("appinstalled", () => {
     deferredPrompt = null;
     hidePrompt();
+    analytics.event("pwa_installed");
     showToast("My MotoFolio successfully installed!");
   });
 

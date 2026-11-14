@@ -5,6 +5,7 @@ import {
   setExpenseDonutMode,
 } from "../state/store";
 import { escapeHtml, formatCurrency, formatNumber, getThemeColor } from "../utils/format";
+import { analytics } from "./analytics";
 import { computeItemStatus } from "./periodicSchedule";
 
 export function renderCountdownSvg(): void {
@@ -175,6 +176,7 @@ export function initChartListeners(): void {
     if (catBtn) catBtn.className = "px-2 py-0.5 rounded-md font-medium transition text-white bg-indigo-600";
     if (mechBtn) mechBtn.className = "px-2 py-0.5 rounded-md font-medium transition text-slate-400 hover:text-slate-200";
     renderExpenseDonutSvg();
+    analytics.event("expense_chart_mode_changed", { mode: "category" });
   });
 
   document.getElementById("donutModeMechBtn")?.addEventListener("click", () => {
@@ -184,5 +186,6 @@ export function initChartListeners(): void {
     if (mechBtn) mechBtn.className = "px-2 py-0.5 rounded-md font-medium transition text-white bg-indigo-600";
     if (catBtn) catBtn.className = "px-2 py-0.5 rounded-md font-medium transition text-slate-400 hover:text-slate-200";
     renderExpenseDonutSvg();
+    analytics.event("expense_chart_mode_changed", { mode: "mechanic" });
   });
 }

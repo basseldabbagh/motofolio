@@ -1,5 +1,6 @@
 import { VEHICLE_TYPE_ICONS, WELCOME_SAMPLE_TEMPLATES } from "../config/profiles";
 import { escapeHtml } from "../utils/format";
+import { analytics } from "./analytics";
 
 export function openAddCarModalWithPreset(presetKey: string | null): void {
   if (typeof window.openVehiclesModal === "function") {
@@ -72,6 +73,7 @@ export function renderWelcomeTemplates(): void {
   container.querySelectorAll<HTMLElement>(".welcome-template-card").forEach((card) => {
     const trigger = (): void => {
       const key = card.getAttribute("data-template-key");
+      analytics.event("welcome_template_selected", { template_key: key });
       openAddCarModalWithPreset(key);
     };
     card.addEventListener("click", trigger);

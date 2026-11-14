@@ -1,4 +1,5 @@
 import { BUILTIN_PROFILES, SAMPLE_PROFILE_KEYS, TEMPLATE_PRESETS } from "../config/profiles";
+import { analytics } from "./analytics";
 import {
   getActiveProfileKey,
   getAppData,
@@ -340,6 +341,7 @@ export function initVehicleAndSettingsListeners(onRenderAll: () => void): void {
     localStorage.setItem(STORAGE_PREFIX + newId, JSON.stringify(newProfile));
     registerCustomProfileOption(newId, `${make} ${model}`.trim());
     void loadProfile(newId);
+    analytics.event("vehicle_created", { base_template: baseKey, currency });
 
     closeVehiclesModal();
     (e.target as HTMLFormElement).reset();

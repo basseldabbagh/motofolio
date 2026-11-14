@@ -1,4 +1,5 @@
 import { initTailwindConfig } from "./config/tailwind";
+import { analytics } from "./features/analytics";
 import { initChartListeners } from "./features/charts";
 import { initCookieConsent } from "./features/cookieConsent";
 import { initPwaInstall } from "./features/pwaInstall";
@@ -98,6 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Initialize Feature Listeners
+  analytics.init();
+  analytics.event("page_view", { page: "dashboard" });
   initThemeFeature();
   initWelcomeListeners();
   initOdometerListeners(renderDashboardLiveMetrics, renderAll);

@@ -1,3 +1,4 @@
+import { analytics } from "./features/analytics";
 import { initCookieConsent } from "./features/cookieConsent";
 import { initPwaInstall } from "./features/pwaInstall";
 import { applyInitialThemeClass, initThemeFeature } from "./features/theme";
@@ -83,6 +84,8 @@ function renderFaqCategories(categories: FaqCategory[], query: string, selectedC
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  analytics.init();
+  analytics.event("page_view", { page: "faqs" });
   initThemeFeature();
   initCookieConsent();
   initPwaInstall();
