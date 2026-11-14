@@ -245,6 +245,13 @@ export function initDataHubListeners(onRenderAll: () => void): void {
   const jsonErrorMsg = document.getElementById("jsonErrorMsg");
   const csvStatusMsg = document.getElementById("csvStatusMsg");
 
+  const syncJsonTextarea = (): void => {
+    if (!jsonTextarea) return;
+    const current = getAppData();
+    const payload = current && current.vehicle ? current : BUILTIN_PROFILES["blank-template"];
+    jsonTextarea.value = JSON.stringify(payload, null, 2);
+  };
+
   const switchHubTab = (tabName: string): void => {
     document.querySelectorAll<HTMLButtonElement>(".hub-tab-btn").forEach((b) => {
       const isMatch = b.getAttribute("data-hub-tab") === tabName;
@@ -260,7 +267,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
       hubTabCsv?.classList.add("hidden");
       hubTabJson?.classList.remove("hidden");
       hubTabJson?.classList.add("flex");
-      if (jsonTextarea) jsonTextarea.value = JSON.stringify(getAppData(), null, 2);
+      syncJsonTextarea();
       jsonErrorMsg?.classList.add("hidden");
     }
   };
@@ -272,7 +279,7 @@ export function initDataHubListeners(onRenderAll: () => void): void {
   document.getElementById("openDataHubBtn")?.addEventListener("click", () => {
     window.closeSettingsModal?.();
     csvStatusMsg?.classList.add("hidden");
-    if (jsonTextarea) jsonTextarea.value = JSON.stringify(getAppData(), null, 2);
+    syncJsonTextarea();
     dataHubModal?.classList.remove("hidden");
     dataHubModal?.classList.add("flex");
   });
