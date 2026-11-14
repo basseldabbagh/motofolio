@@ -143,52 +143,6 @@
 						]
 					},
 					{
-						"@type": "FAQPage",
-						"@id": "https://motofolio.pages.dev/#faq",
-						"mainEntity": [
-							{
-								"@type": "Question",
-								"name": "What is My MotoFolio and how does it work?",
-								"acceptedAnswer": {
-									"@type": "Answer",
-									"text": "My MotoFolio is a free, 100% client-side vehicle maintenance tracker. It monitors periodic maintenance schedules (oil, filters, spark plugs, timing belt, brake pads), tracks workshop invoices and fuel consumption, and generates printable A4 inspection reports without requiring a server."
-								}
-							},
-							{
-								"@type": "Question",
-								"name": "How does My MotoFolio calculate when car maintenance is due?",
-								"acceptedAnswer": {
-									"@type": "Answer",
-									"text": "My MotoFolio tracks your current odometer reading against each component's last serviced mileage and recommended replacement interval. Status is color-coded into Good (nominal), Due Soon (within 1,000 km), or Overdue (urgent)."
-								}
-							},
-							{
-								"@type": "Question",
-								"name": "Is My MotoFolio completely free and private?",
-								"acceptedAnswer": {
-									"@type": "Answer",
-									"text": "Yes, My MotoFolio is 100% free under the open-source MIT License. All vehicle records remain strictly private inside your browser's local storage. There is no cloud tracking, no backend database, and optional backups sync directly to your personal Google Drive."
-								}
-							},
-							{
-								"@type": "Question",
-								"name": "Can I export or print my vehicle maintenance history?",
-								"acceptedAnswer": {
-									"@type": "Answer",
-									"text": "Yes. You can export clean CSV spreadsheets for Excel or Google Sheets, export full JSON v2.0 vehicle profiles, and print professional A4 Vehicle Condition Inspection Reports directly from your browser."
-								}
-							},
-							{
-								"@type": "Question",
-								"name": "How do I install My MotoFolio on my mobile phone or desktop?",
-								"acceptedAnswer": {
-									"@type": "Answer",
-									"text": "My MotoFolio is an installable Progressive Web App (PWA). Click 'Install' on the install banner, or select 'Add to Home Screen' in iOS Safari or Chrome on Android. Once installed, it works completely offline."
-								}
-							}
-						]
-					},
-					{
 						"@type": "HowTo",
 						"@id": "https://motofolio.pages.dev/#howto",
 						"name": "How to Track Your Car Maintenance with My MotoFolio",
@@ -224,6 +178,9 @@
 				]
 			}
 		</script>
+
+		<!-- FAQPage JSON-LD (populated at build time from /public/data/faqs.json) -->
+		<!-- HOME_FAQ_JSONLD -->
 
 		<!-- Deployment Configuration (Google OAuth Client ID) -->
 		<script src="config.js" defer></script>
@@ -1171,66 +1128,8 @@
 					</div>
 				</div>
 
-				<div class="space-y-3">
-					<details class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
-						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
-							<span>What is My MotoFolio and how does it work?</span>
-							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</summary>
-						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
-							My MotoFolio is a free, 100% client-side automotive management application. It tracks periodic fluid and component replacement schedules (such as engine oil, transmission fluid, spark plugs, brake pads, coolant, timing belts, tires, and filters), logs workshop service invoices with labor vs. parts breakdowns, records fuel economy, and generates professional A4 condition inspection reports without requiring a server.
-						</div>
-					</details>
-
-					<details class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
-						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
-							<span>How does My MotoFolio calculate when car maintenance is due?</span>
-							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</summary>
-						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
-							My MotoFolio tracks your current odometer reading against each component's baseline mileage and recommended replacement interval. Status is categorized into <span class="text-emerald-400 font-semibold">Good</span> (nominal distance remaining), <span class="text-amber-400 font-semibold">Due Soon</span> (warning within 1,000 km), or <span class="text-rose-400 font-semibold">Overdue</span> (exceeded interval). You can simulate upcoming maintenance by clicking <code class="text-indigo-300 font-mono">+1k</code> or <code class="text-indigo-300 font-mono">+5k</code> km.
-						</div>
-					</details>
-
-					<details class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
-						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
-							<span>Is My MotoFolio completely free, private, and offline?</span>
-							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</summary>
-						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
-							Yes. My MotoFolio is 100% free under the open-source <a href="https://opensource.org/license/mit" target="_blank" rel="noopener noreferrer" class="text-indigo-700 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">MIT License</a>. It operates with zero backend databases and zero third-party telemetry. All your vehicle records are stored locally in your <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API" target="_blank" rel="noopener noreferrer" class="text-indigo-700 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">browser's local storage</a>. You also have the option to connect your personal Google Drive for direct, private cloud backups—see our <a href="/privacy-policy" class="text-indigo-700 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">Privacy Policy</a> and <a href="/terms-of-service" class="text-indigo-700 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">Terms of Service</a> for full details.
-						</div>
-					</details>
-
-					<details class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
-						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
-							<span>Can I export or print my vehicle maintenance history?</span>
-							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</summary>
-						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
-							Yes. You can export clean CSV spreadsheets (compatible with Microsoft Excel, Apple Numbers, and Google Sheets) or JSON v2.0 profiles at any time. You can also generate print-ready A4 Vehicle Status Reports and Service History Reports with one click for resale, workshops, or insurance proof.
-						</div>
-					</details>
-
-					<details class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
-						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
-							<span>How do I install My MotoFolio on my mobile phone or desktop?</span>
-							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</summary>
-						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
-							My MotoFolio is an installable <a href="https://web.dev/explore/progressive-web-apps" target="_blank" rel="noopener noreferrer" class="text-indigo-700 dark:text-indigo-400 underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">Progressive Web App (PWA)</a>. Click 'Install' on the install banner, or select 'Add to Home Screen' in iOS Safari or Chrome on Android. On desktop (Chrome, Edge), click the install icon in your address bar. Once installed, it works completely offline with zero internet connection required.
-						</div>
-					</details>
+				<div id="homeFaqList" class="space-y-3">
+					<!-- HOME_FAQ_PRERENDER_CONTENT -->
 				</div>
 				<p class="mt-4 text-xs text-slate-400">
 					Looking for more answers on service intervals, CSV/JSON imports, or Google Drive sync? Explore the full <a href="/faqs" class="text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">My MotoFolio FAQs</a>.

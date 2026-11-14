@@ -8,6 +8,7 @@ import { initFuelListeners } from "./features/fuel";
 import { autoSyncToGoogleDrive, initGoogleDriveListeners } from "./features/googleDrive";
 import { syncProfileSelectOptions } from "./features/headerKpis";
 import { initHistoryListeners } from "./features/history";
+import { initHomeFaqs } from "./features/homeFaqs";
 import { initOdometerListeners } from "./features/odometer";
 import { initPeriodicScheduleListeners, renderPeriodicTable } from "./features/periodicSchedule";
 import {
@@ -95,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCookieConsent();
   initPwaInstall();
   initWebMcpTools();
+  void initHomeFaqs();
 
   // Register Service Worker for PWA (Installable App & Offline Mode)
   if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {

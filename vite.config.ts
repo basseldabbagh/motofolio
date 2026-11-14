@@ -108,6 +108,7 @@ function injectGoogleSiteVerification(token?: string): Plugin {
 
 interface FaqJsonItem {
   id: string;
+  featured?: boolean;
   question: string;
   answer: string;
 }
@@ -149,9 +150,52 @@ function generateFaqArtifacts(): Plugin {
   return {
     name: "generate-faq-artifacts",
     transformIndexHtml(html, ctx) {
-      if (!ctx.filename.endsWith("faqs.html")) return html;
+      const baseName = path.basename(ctx.filename);
+      if (baseName !== "faqs.html" && baseName !== "index.html") return html;
+
       const data = loadFaqData();
       const categories = data?.categories ?? [];
+
+      if (baseName === "index.html") {
+        const allItems = categories.flatMap((cat) => cat.faqs);
+        const featuredItems = allItems.filter((item) => item.featured);
+        const homeItems = featuredItems.length > 0 ? featuredItems : allItems.slice(0, 5);
+
+        const homeJsonLdTag = `<script type="application/ld+json">${JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "@id": "https://motofolio.pages.dev/#faq",
+          mainEntity: homeItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer,
+            },
+          })),
+        })}</script>`;
+
+        const homeFaqHtml = homeItems
+          .map(
+            (item) => `
+					<details id="home-faq-${escapeHtmlServer(item.id)}" class="group bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 transition-all hover:border-slate-700 open:border-indigo-500/40">
+						<summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-slate-200 group-hover:text-white list-none select-none">
+							<span>${escapeHtmlServer(item.question)}</span>
+							<svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+							</svg>
+						</summary>
+						<div class="mt-2 text-xs text-slate-300 leading-relaxed pt-2 border-t border-slate-800/60">
+							${escapeHtmlServer(item.answer)}
+						</div>
+					</details>`,
+          )
+          .join("\n");
+
+        return html
+          .replace("<!-- HOME_FAQ_JSONLD -->", homeJsonLdTag)
+          .replace("<!-- HOME_FAQ_PRERENDER_CONTENT -->", homeFaqHtml);
+      }
 
       const faqEntities = categories.flatMap((cat) =>
         cat.faqs.map((item) => ({

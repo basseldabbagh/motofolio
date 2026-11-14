@@ -10,16 +10,19 @@
       "faqs": [
         {
           "id": "what-is-motofolio",
+          "featured": true,
           "question": "What is My MotoFolio and how does it work?",
           "answer": "My MotoFolio is a free, 100% client-side vehicle maintenance tracker. It monitors periodic maintenance schedules (engine oil, filters, spark plugs, timing belt, brake pads, coolant, tires), tracks workshop invoices and fuel consumption, and generates printable A4 inspection reports directly in your browser without requiring a backend server."
         },
         {
           "id": "is-it-free-and-private",
+          "featured": true,
           "question": "Is My MotoFolio completely free, private, and offline?",
           "answer": "Yes. My MotoFolio is 100% free under the open-source MIT License. It operates with zero backend databases and zero third-party telemetry. All vehicle records remain strictly private inside your browser's local storage, with optional direct backups to your personal Google Drive."
         },
         {
           "id": "how-to-install-pwa",
+          "featured": true,
           "question": "How do I install My MotoFolio on my mobile phone or desktop?",
           "answer": "My MotoFolio is an installable Progressive Web App (PWA). Click 'Install' on the install banner, or choose 'Add to Home Screen' in iOS Safari or Chrome on Android. On desktop (Chrome or Edge), click the install icon in your browser's address bar. Once installed, it works completely offline."
         }
@@ -31,6 +34,7 @@
       "faqs": [
         {
           "id": "how-due-calculated",
+          "featured": true,
           "question": "How does My MotoFolio calculate when car maintenance is due?",
           "answer": "My MotoFolio compares your current odometer reading against each component's last serviced mileage and recommended replacement interval (nextDueKm = lastServicedKm + intervalKm). Remaining distance is color-coded into Good (more than 1,000 km remaining), Due Soon (1,000 km or less remaining), Overdue (0 km or negative), or Unset (needs baseline entry)."
         },
@@ -68,6 +72,7 @@
       "faqs": [
         {
           "id": "csv-json-export",
+          "featured": true,
           "question": "Can I export or import my vehicle maintenance data?",
           "answer": "Yes. The Data Hub supports bi-directional export and import using clean CSV spreadsheets (compatible with Excel, Apple Numbers, and Google Sheets) as well as full JSON v2.0 vehicle profiles. A blank CSV template is also available for bulk entry."
         },
