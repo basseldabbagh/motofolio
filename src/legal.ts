@@ -1,3 +1,4 @@
+import { applyGoogleSignInVisibility } from "./config/features";
 import { initTailwindConfig } from "./config/tailwind";
 import { analytics } from "./features/analytics";
 import { initCookieConsent } from "./features/cookieConsent";
@@ -9,6 +10,7 @@ applyInitialThemeClass();
 initTailwindConfig();
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyGoogleSignInVisibility();
   analytics.init();
   analytics.event("page_view", { page: "legal" });
   initThemeFeature();

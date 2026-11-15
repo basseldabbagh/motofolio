@@ -1,4 +1,5 @@
 import { renderGoogleAuthButtons } from "../components/googleAuthButton";
+import { isGoogleSignInEnabled } from "../config/features";
 import {
   clearAllLocalVehicles,
   getActiveProfileKey,
@@ -48,9 +49,7 @@ function clearStoredAccessToken(): void {
   sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
 }
 
-export function isGoogleSignInEnabled(): boolean {
-  return import.meta.env.VITE_ENABLE_GOOGLE_SIGN_IN === "true";
-}
+export { isGoogleSignInEnabled };
 
 export function getDriveClientId(): string {
   const runtimeId = window.MOTOFOLIO_CONFIG?.GOOGLE_CLIENT_ID;

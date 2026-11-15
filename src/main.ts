@@ -1,4 +1,5 @@
 import { initTailwindConfig } from "./config/tailwind";
+import { applyGoogleSignInVisibility } from "./config/features";
 import { analytics } from "./features/analytics";
 import { initChartListeners } from "./features/charts";
 import { initCookieConsent } from "./features/cookieConsent";
@@ -113,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize Feature Listeners
   analytics.init();
   analytics.event("page_view", { page: "dashboard" });
+  applyGoogleSignInVisibility();
   initThemeFeature();
   initWelcomeListeners();
   initOdometerListeners(renderDashboardLiveMetrics, renderAll);

@@ -114,8 +114,11 @@
 						Track Every Service, Mileage &amp; Expense — Privately.
 					</h1>
 
-					<p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
-						My MotoFolio is a universal vehicle maintenance tracker, periodic service interval calculator, workshop expense ledger, and printable A4 condition report builder. No sign-ups, no servers — your garage stays on your device, with optional private sync to your own Google Drive.
+					<p data-google-signin="disabled" class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+						My MotoFolio is a universal vehicle maintenance tracker, periodic service interval calculator, workshop expense ledger, and printable A4 condition report builder. No sign-ups, no servers — all your vehicle data is saved locally in your browser with CSV and JSON export/import.
+					</p>
+					<p data-google-signin="enabled" class="hidden text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+						My MotoFolio is a universal vehicle maintenance tracker, periodic service interval calculator, workshop expense ledger, and printable A4 condition report builder. No servers — your garage is saved locally in your browser or synced privately to your own Google Drive.
 					</p>
 
 					<div class="pt-2 flex flex-wrap items-center gap-3">
@@ -211,8 +214,10 @@
 								<path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
 							</svg>
 						</div>
-						<h3 class="text-sm font-bold text-white">CSV, JSON &amp; Google Drive</h3>
-						<p class="text-xs text-slate-400 leading-relaxed">Export and import spreadsheets (.CSV) or full JSON v2.0 backups anytime, or sync directly to a private folder in your Google Drive.</p>
+						<h3 data-google-signin="disabled" class="text-sm font-bold text-white">CSV &amp; JSON Local Backup</h3>
+						<h3 data-google-signin="enabled" class="hidden text-sm font-bold text-white">CSV, JSON &amp; Google Drive</h3>
+						<p data-google-signin="disabled" class="text-xs text-slate-400 leading-relaxed">Your garage is saved locally in your browser. Export and import spreadsheets (.CSV) or full JSON v2.0 backups anytime.</p>
+						<p data-google-signin="enabled" class="hidden text-xs text-slate-400 leading-relaxed">Export and import spreadsheets (.CSV) or full JSON v2.0 backups anytime, or sync directly to a private folder in your Google Drive.</p>
 					</article>
 
 					<article class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-2.5">
@@ -222,7 +227,7 @@
 							</svg>
 						</div>
 						<h3 class="text-sm font-bold text-white">Zero-Server Privacy &amp; PWA</h3>
-						<p class="text-xs text-slate-400 leading-relaxed">Installable on desktop and mobile. Your vehicle data lives in browser storage and never passes through third-party tracking servers.</p>
+						<p class="text-xs text-slate-400 leading-relaxed">Installable on desktop and mobile. Your vehicle records are saved locally in your browser without requiring a backend database.</p>
 					</article>
 				</div>
 			</section>
@@ -243,8 +248,10 @@
 					</div>
 					<div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-1.5">
 						<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-300 font-mono font-bold text-xs">3</span>
-						<h3 class="font-bold text-white text-sm">Monitor, Print &amp; Sync</h3>
-						<p class="text-slate-400 leading-relaxed">Spot upcoming or overdue intervals on native SVG charts, print A4 condition reports, or sync to your own Google Drive.</p>
+						<h3 data-google-signin="disabled" class="font-bold text-white text-sm">Monitor, Print &amp; Back Up</h3>
+						<h3 data-google-signin="enabled" class="hidden font-bold text-white text-sm">Monitor, Print &amp; Sync</h3>
+						<p data-google-signin="disabled" class="text-slate-400 leading-relaxed">Spot upcoming or overdue intervals on native SVG charts, print A4 condition reports, and back up locally via CSV or JSON.</p>
+						<p data-google-signin="enabled" class="hidden text-slate-400 leading-relaxed">Spot upcoming or overdue intervals on native SVG charts, print A4 condition reports, or sync to your own Google Drive.</p>
 					</div>
 				</div>
 			</section>
@@ -270,7 +277,10 @@
 				<div id="homeFaqList" class="space-y-3">
 					<!-- HOME_FAQ_PRERENDER_CONTENT -->
 				</div>
-				<p class="mt-4 text-xs text-slate-400">
+				<p data-google-signin="disabled" class="mt-4 text-xs text-slate-400">
+					Looking for more answers on service intervals, local storage, or CSV/JSON imports? Explore all <a href="/faqs" class="text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">My MotoFolio FAQs</a>.
+				</p>
+				<p data-google-signin="enabled" class="hidden mt-4 text-xs text-slate-400">
 					Looking for more answers on service intervals, CSV/JSON imports, or Google Drive sync? Explore all <a href="/faqs" class="text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-600 dark:hover:text-indigo-300">My MotoFolio FAQs</a>.
 				</p>
 			</section>
@@ -279,7 +289,8 @@
 			<section class="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 flex flex-wrap items-center justify-between gap-4">
 				<div class="space-y-1">
 					<h2 class="text-base sm:text-lg font-bold text-white">Ready to organize your garage?</h2>
-					<p class="text-xs sm:text-sm text-slate-400">Open the dashboard to pick a vehicle template, import a backup, or connect Google Drive.</p>
+					<p data-google-signin="disabled" class="text-xs sm:text-sm text-slate-400">Open the dashboard to pick a vehicle template or import a local CSV/JSON backup.</p>
+					<p data-google-signin="enabled" class="hidden text-xs sm:text-sm text-slate-400">Open the dashboard to pick a vehicle template, import a backup, or connect Google Drive.</p>
 				</div>
 				<a
 					href="/dashboard?view=dashboard"

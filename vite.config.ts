@@ -149,13 +149,16 @@ function injectGoogleTagManager(rawIds?: string): Plugin {
 interface FaqJsonItem {
   id: string;
   featured?: boolean;
+  requiresGoogleSignIn?: boolean;
   question: string;
   answer: string;
+  answerLocalOnly?: string;
 }
 
 interface FaqJsonCategory {
   id: string;
   name: string;
+  nameLocalOnly?: string;
   faqs: FaqJsonItem[];
 }
 
@@ -176,12 +179,31 @@ function escapeHtmlServer(str: string): string {
 }
 
 /** Reads public/data/faqs.json to pre-render faqs.html (HTML + FAQPage JSON-LD) and emit dist/faqs.md for AI agents. */
-function generateFaqArtifacts(): Plugin {
+function generateFaqArtifacts(googleSignInEnabled: boolean): Plugin {
   const loadFaqData = (): FaqJsonData | null => {
     const jsonPath = path.resolve(process.cwd(), "public/data/faqs.json");
     if (!fs.existsSync(jsonPath)) return null;
     try {
-      return JSON.parse(fs.readFileSync(jsonPath, "utf8")) as FaqJsonData;
+      const raw = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as FaqJsonData;
+      const categories = (raw.categories ?? [])
+        .map((cat) => ({
+          ...cat,
+          name: googleSignInEnabled ? cat.name : cat.nameLocalOnly ?? cat.name,
+          faqs: cat.faqs
+            .filter((item) => googleSignInEnabled || !item.requiresGoogleSignIn)
+            .map((item) => ({
+              ...item,
+              answer: googleSignInEnabled ? item.answer : item.answerLocalOnly ?? item.answer,
+            })),
+        }))
+        .filter((cat) => cat.faqs.length > 0);
+      return {
+        ...raw,
+        description: googleSignInEnabled
+          ? raw.description
+          : (raw.description || "").replace("Google Drive backup, ", ""),
+        categories,
+      };
     } catch {
       return null;
     }
@@ -317,10 +339,49 @@ function generateFaqArtifacts(): Plugin {
   };
 }
 
+/** Adapts static HTML metadata and `data-google-signin` blocks to `VITE_ENABLE_GOOGLE_SIGN_IN`. */
+function toggleGoogleSignInHtml(googleSignInEnabled: boolean): Plugin {
+  return {
+    name: "toggle-google-signin-html",
+    transformIndexHtml(html) {
+      let out = html;
+      if (!googleSignInEnabled) {
+        out = out
+          .replace(
+            '"Google Drive cloud backup and sync"',
+            '"Local browser storage with CSV and JSON backup"',
+          )
+          .replace(
+            "100% client-side with optional Google Drive sync.",
+            "100% client-side and saved locally in your browser.",
+          )
+          .replace(
+            "with local browser storage and optional direct Google Drive sync.",
+            "where all vehicle records are saved locally in your browser.",
+          )
+          .replace(
+            "handles your vehicle records locally in your browser and optionally syncs CSV backups directly to your private Google Drive.",
+            "saves all your vehicle records locally in your browser with CSV and JSON export/import.",
+          )
+          .replace(
+            "service interval calculator, and Google Drive sync tool.",
+            "and service interval calculator saved locally in your browser.",
+          )
+          .replace(
+            ", and third-party Google Drive integration terms for My MotoFolio.",
+            " for My MotoFolio.",
+          );
+      }
+      return out;
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const verificationToken =
     env.GOOGLE_SITE_VERIFICATION || env.VITE_GOOGLE_SITE_VERIFICATION || "";
+  const googleSignInEnabled = env.VITE_ENABLE_GOOGLE_SIGN_IN === "true";
 
   return {
     base: "./",
@@ -328,7 +389,8 @@ export default defineConfig(({ mode }) => {
     plugins: [
       cleanLegalRoutes(),
       copyStaticRuntimeAssets(),
-      generateFaqArtifacts(),
+      generateFaqArtifacts(googleSignInEnabled),
+      toggleGoogleSignInHtml(googleSignInEnabled),
       injectGoogleSiteVerification(verificationToken),
       injectGoogleTagManager(env.VITE_GTM_IDS),
     ],

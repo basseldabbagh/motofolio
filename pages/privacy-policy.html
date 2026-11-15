@@ -314,10 +314,14 @@
 					<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
 					</svg>
-					<span>100% Client-Side Architecture • Zero Tracking • No Backend Servers</span>
+					<span>100% Client-Side Architecture • Local-First Storage • No Backend Servers</span>
 				</div>
 				<h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Privacy Policy</h1>
-				<p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
+				<p data-google-signin="disabled" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
+					MotoFolio is designed from the ground up as a privacy-first vehicle maintenance tracker. All vehicle records are
+					saved locally in your own browser&apos;s storage, with CSV and JSON export/import for portable backups.
+				</p>
+				<p data-google-signin="enabled" class="hidden text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
 					MotoFolio is designed from the ground up as a privacy-first vehicle maintenance tracker. All vehicle records stay
 					in your own browser, and optional cloud synchronization communicates directly between your browser and your
 					personal Google Drive.
@@ -342,7 +346,18 @@
 						Your garage, odometer, service logs, and fuel receipts are saved only in your browser&apos;s local storage.
 					</p>
 				</div>
-				<div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1.5">
+				<div data-google-signin="disabled" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1.5">
+					<div class="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+						<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+						</svg>
+						<span>CSV &amp; JSON Backups</span>
+					</div>
+					<p class="text-xs text-slate-400 leading-relaxed">
+						Export or import full vehicle profiles as standard CSV spreadsheets or JSON v2.0 files anytime.
+					</p>
+				</div>
+				<div data-google-signin="enabled" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-1.5">
 					<div class="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
 						<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
@@ -361,7 +376,7 @@
 						<span>Private &amp; Offline-First</span>
 					</div>
 					<p class="text-xs text-slate-400 leading-relaxed">
-						We do not run tracking cookies or user profiling, and we never sell data.
+						Your vehicle records stay in your browser&apos;s storage, and we never sell your data.
 					</p>
 				</div>
 			</section>
@@ -401,13 +416,17 @@
 							expiry dates, fuel receipts, and workshop service history (including mechanic/workshop names, notes, and
 							payment methods).
 						</li>
-						<li>
+						<li data-google-signin="disabled">
+							<strong>App Preferences (<code class="font-mono text-xs text-emerald-300">localStorage</code>):</strong>
+							Your selected theme mode (System, Light, or Dark) and active vehicle profile key.
+						</li>
+						<li data-google-signin="enabled" class="hidden">
 							<strong>App Preferences (<code class="font-mono text-xs text-emerald-300">localStorage</code>):</strong>
 							Your selected theme mode (System, Light, or Dark), active vehicle profile key, and optional Google Drive
 							sync preferences (auto-sync toggle, custom Drive folder name, folder ID, and connected Google account
 							email for display).
 						</li>
-						<li>
+						<li data-google-signin="enabled" class="hidden">
 							<strong>Session OAuth Token (<code class="font-mono text-xs text-emerald-300">sessionStorage</code>):</strong>
 							If you connect Google Drive, the temporary OAuth 2.0 access token is stored strictly in browser
 							<code class="font-mono text-xs">sessionStorage</code> so it automatically clears when your browser session
@@ -421,7 +440,20 @@
 					</ul>
 				</section>
 
-				<section class="space-y-3 border-t border-slate-800 pt-6">
+				<section data-google-signin="disabled" class="space-y-3 border-t border-slate-800 pt-6">
+					<h2 class="text-lg font-bold text-white flex items-center gap-2">
+						<span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">03</span>
+						<span>Local-Only Storage &amp; Portable Backups</span>
+					</h2>
+					<p>
+						All vehicle profiles, maintenance schedules, expense ledgers, and fuel logs are saved locally in your browser&apos;s
+						<code class="font-mono text-xs">localStorage</code>. No account is required, and no vehicle data is transmitted to
+						any remote database or third-party cloud storage. You can export or restore your records anytime using CSV or JSON
+						v2.0 files in the Data Hub.
+					</p>
+				</section>
+
+				<section data-google-signin="enabled" class="hidden space-y-3 border-t border-slate-800 pt-6">
 					<h2 class="text-lg font-bold text-white flex items-center gap-2">
 						<span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">03</span>
 						<span>Optional Google Drive Cloud Sync &amp; Google User Data</span>
@@ -494,16 +526,20 @@
 						<span>Cookies, Analytics &amp; Third-Party Assets</span>
 					</h2>
 					<p>
-						My MotoFolio does <strong>not</strong> set tracking cookies, does not profile users, and operates locally in your browser.
+						My MotoFolio stores all vehicle records locally in your browser and never sells your data. When analytics are configured (such as Google Tag Manager or PostHog), anonymous usage metrics are only loaded in accordance with your cookie consent preferences to help improve the app.
 					</p>
-					<p>
+					<p data-google-signin="disabled">
+						When you load MotoFolio online, your browser connects to static hosting (Cloudflare Pages) and third-party
+						resource providers required to render the interface:
+					</p>
+					<p data-google-signin="enabled" class="hidden">
 						When you load MotoFolio online, your browser connects to static hosting (Cloudflare Pages) and third-party
 						resource providers required to render the interface and optional Google sign-in:
 					</p>
 					<ul class="list-disc ps-5 space-y-1.5 text-slate-300">
 						<li><strong>Tailwind CSS Play CDN</strong> (<code class="font-mono text-xs">cdn.tailwindcss.com</code>) for utility styling.</li>
 						<li><strong>Google Fonts</strong> (<code class="font-mono text-xs">fonts.googleapis.com</code> &amp; <code class="font-mono text-xs">fonts.gstatic.com</code>) for Inter and JetBrains Mono typography.</li>
-						<li><strong>Google Identity Services &amp; Drive API</strong> (<code class="font-mono text-xs">accounts.google.com</code> &amp; <code class="font-mono text-xs">www.googleapis.com</code>) when authenticating or syncing with Google Drive.</li>
+						<li data-google-signin="enabled" class="hidden"><strong>Google Identity Services &amp; Drive API</strong> (<code class="font-mono text-xs">accounts.google.com</code> &amp; <code class="font-mono text-xs">www.googleapis.com</code>) when authenticating or syncing with Google Drive.</li>
 					</ul>
 					<p class="text-slate-400 text-xs">
 						Standard HTTP connection metadata (such as your IP address and browser user-agent) may be processed by these
@@ -520,7 +556,7 @@
 					<ul class="list-disc ps-5 space-y-2 text-slate-300">
 						<li><strong>Export Anytime:</strong> Download any vehicle profile as a standard <code class="font-mono text-xs">.csv</code> or <code class="font-mono text-xs">.json</code> file from the Data Hub.</li>
 						<li><strong>Delete Local Data:</strong> Remove individual vehicles in Settings, or clear your browser&apos;s site data (<code class="font-mono text-xs">localStorage</code>, <code class="font-mono text-xs">sessionStorage</code>, and Cache Storage) to erase all local records immediately.</li>
-						<li>
+						<li data-google-signin="enabled" class="hidden">
 							<strong>Revoke Google Drive Access:</strong> Click <em>Disconnect</em> inside the Google Drive Sync modal,
 							delete your <code class="font-mono text-xs">MotoFolio</code> folder in Google Drive, or revoke MotoFolio&apos;s
 							permissions directly from your

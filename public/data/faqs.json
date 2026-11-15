@@ -18,7 +18,8 @@
           "id": "is-it-free-and-private",
           "featured": true,
           "question": "Is My MotoFolio completely free, private, and offline?",
-          "answer": "Yes. My MotoFolio is 100% free under the open-source MIT License. It operates with zero backend databases and zero third-party telemetry. All vehicle records remain strictly private inside your browser's local storage, with optional direct backups to your personal Google Drive."
+          "answer": "Yes. My MotoFolio is 100% free under the open-source MIT License. It operates with zero backend databases, and your vehicle data is saved locally in your browser's storage or optionally synced to your personal Google Drive.",
+          "answerLocalOnly": "Yes. My MotoFolio is 100% free under the open-source MIT License. It operates with zero backend databases, and all your vehicle data is saved locally inside your browser's storage with CSV and JSON export/import for backups."
         },
         {
           "id": "how-to-install-pwa",
@@ -69,6 +70,7 @@
     {
       "id": "data-and-reports",
       "name": "Data Export, Google Drive & A4 Reports",
+      "nameLocalOnly": "Data Export & A4 Reports",
       "faqs": [
         {
           "id": "csv-json-export",
@@ -78,6 +80,7 @@
         },
         {
           "id": "google-drive-sync",
+          "requiresGoogleSignIn": true,
           "question": "How does optional Google Drive sync work?",
           "answer": "When enabled, My MotoFolio connects directly from your browser to your personal Google Drive using Google Identity Services OAuth (drive.file scope). Your data never passes through any MotoFolio server."
         },

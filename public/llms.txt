@@ -5,7 +5,7 @@
 ## Overview
 - Website: [My MotoFolio](https://motofolio.pages.dev/)
 - License: [MIT License](https://opensource.org/license/mit)
-- Architecture: 100% Client-Side, Offline-First Progressive Web App (PWA) with browser LocalStorage and optional direct Google Drive sync.
+- Architecture: 100% Client-Side, Offline-First Progressive Web App (PWA) with browser LocalStorage and CSV/JSON data portability.
 - Privacy Model: Zero server databases, 100% private client-side storage.
 
 ## Key Capabilities & Automotive Calculations
@@ -21,7 +21,7 @@
 - [Frequently Asked Questions](https://motofolio.pages.dev/faqs): Comprehensive Q&A covering maintenance calculations, CSV/JSON interchange, and offline privacy.
 - [FAQs Markdown](https://motofolio.pages.dev/faqs.md): Clean Markdown export of all FAQs for AI agents and LLMs.
 - [FAQs JSON Data](https://motofolio.pages.dev/data/faqs.json): Structured JSON dataset of all FAQs.
-- [Privacy Policy](https://motofolio.pages.dev/privacy-policy): Client-side storage and Google Drive OAuth privacy policy.
+- [Privacy Policy](https://motofolio.pages.dev/privacy-policy): Client-side local storage privacy policy.
 - [Terms of Service](https://motofolio.pages.dev/terms-of-service): Open-source MIT terms of use.
 - [XML Sitemap](https://motofolio.pages.dev/sitemap.xml): Canonical URL index.
 - [Agentic Resource Discovery (ARD)](https://motofolio.pages.dev/.well-known/ard.json): Machine-readable capability and resource manifest.

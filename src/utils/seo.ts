@@ -1,3 +1,4 @@
+import { isGoogleSignInEnabled } from "../config/features";
 import { getActiveProfileKey, getAppData } from "../state/store";
 import { formatNumber } from "./format";
 
@@ -48,7 +49,9 @@ export function updateDynamicSEO(): void {
       "Dynamic odometer simulation",
       "Workshop maintenance expense ledger",
       "Printable A4 vehicle condition reports",
-      "Google Drive cloud backup and sync",
+      isGoogleSignInEnabled()
+        ? "Google Drive cloud backup and sync"
+        : "Local browser storage with CSV and JSON backup",
       "Offline Progressive Web App (PWA) support",
     ],
   };

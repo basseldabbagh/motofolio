@@ -1,3 +1,4 @@
+import { applyGoogleSignInVisibility, isGoogleSignInEnabled } from "./config/features";
 import { analytics } from "./features/analytics";
 import { initCookieConsent } from "./features/cookieConsent";
 import { initPwaInstall } from "./features/pwaInstall";
@@ -6,13 +7,16 @@ import { escapeHtml } from "./utils/format";
 
 interface FaqItem {
   id: string;
+  requiresGoogleSignIn?: boolean;
   question: string;
   answer: string;
+  answerLocalOnly?: string;
 }
 
 interface FaqCategory {
   id: string;
   name: string;
+  nameLocalOnly?: string;
   faqs: FaqItem[];
 }
 
@@ -84,6 +88,7 @@ function renderFaqCategories(categories: FaqCategory[], query: string, selectedC
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  applyGoogleSignInVisibility();
   analytics.init();
   analytics.event("page_view", { page: "faqs" });
   initThemeFeature();
@@ -92,12 +97,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const searchInput = document.getElementById("faqSearchInput") as HTMLInputElement | null;
   const categorySelect = document.getElementById("faqCategoryFilter") as HTMLSelectElement | null;
+  if (searchInput && isGoogleSignInEnabled()) {
+    searchInput.placeholder = "Search questions (e.g. oil, CSV, Google Drive, PWA)...";
+  }
 
   try {
     const res = await fetch("/data/faqs.json");
     if (!res.ok) return;
     const data = (await res.json()) as FaqDataset;
-    const categories = Array.isArray(data.categories) ? data.categories : [];
+    const googleEnabled = isGoogleSignInEnabled();
+    const categories = (Array.isArray(data.categories) ? data.categories : [])
+      .map((cat) => ({
+        ...cat,
+        name: googleEnabled ? cat.name : cat.nameLocalOnly ?? cat.name,
+        faqs: cat.faqs
+          .filter((item) => googleEnabled || !item.requiresGoogleSignIn)
+          .map((item) => ({
+            ...item,
+            answer: googleEnabled ? item.answer : item.answerLocalOnly ?? item.answer,
+          })),
+      }))
+      .filter((cat) => cat.faqs.length > 0);
 
     if (categorySelect && categories.length > 0) {
       categorySelect.innerHTML =

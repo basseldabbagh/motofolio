@@ -317,7 +317,11 @@
 					<span>Free &amp; Open-Source Software • MIT License</span>
 				</div>
 				<h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Terms of Service</h1>
-				<p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
+				<p data-google-signin="disabled" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
+					Please read these Terms of Service carefully before using MotoFolio. By accessing or using the web application,
+					saving local vehicle records, or exporting reports, you agree to the terms outlined below.
+				</p>
+				<p data-google-signin="enabled" class="hidden text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
 					Please read these Terms of Service carefully before using MotoFolio. By accessing or using the web application,
 					exporting reports, or connecting optional Google Drive synchronization, you agree to the terms outlined below.
 				</p>
@@ -367,7 +371,13 @@
 						<span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">02</span>
 						<span>Description of Service</span>
 					</h2>
-					<p>
+					<p data-google-signin="disabled">
+						MotoFolio provides a client-side web interface for managing vehicle profiles, tracking periodic service
+						intervals by distance and calendar time, logging workshop and DIY repair expenses, monitoring fuel economy
+						receipts, tracking road tax and insurance expiry dates, importing/exporting structured CSV and JSON files,
+						and generating printable A4 condition and history reports — with all data saved locally in your browser.
+					</p>
+					<p data-google-signin="enabled" class="hidden">
 						MotoFolio provides a client-side web interface for managing vehicle profiles, tracking periodic service
 						intervals by distance and calendar time, logging workshop and DIY repair expenses, monitoring fuel economy
 						receipts, tracking road tax and insurance expiry dates, importing/exporting structured CSV and JSON files,
@@ -399,7 +409,13 @@
 							service intervals, OEM part numbers, tax/insurance expiry dates, and cost entries before relying on them or
 							sharing A4 reports with buyers, workshops, or fleet operators.
 						</li>
-						<li>
+						<li data-google-signin="disabled">
+							<strong>Backups &amp; Local Storage Volatility:</strong> Because MotoFolio stores data locally in your
+							browser&apos;s <code class="font-mono text-xs">localStorage</code> without a central server backup, clearing
+							browser data, switching browsers/devices, or operating in private/incognito browsing sessions may delete
+							unsaved local records. You are responsible for exporting periodic CSV/JSON backups.
+						</li>
+						<li data-google-signin="enabled" class="hidden">
 							<strong>Backups &amp; Local Storage Volatility:</strong> Because MotoFolio stores data locally in your
 							browser&apos;s <code class="font-mono text-xs">localStorage</code> without a central server backup, clearing
 							browser data, switching browsers/devices, or operating in private/incognito browsing sessions may delete
@@ -426,7 +442,19 @@
 					</p>
 				</section>
 
-				<section class="space-y-3 border-t border-slate-800 pt-6">
+				<section data-google-signin="disabled" class="space-y-3 border-t border-slate-800 pt-6">
+					<h2 class="text-lg font-bold text-white flex items-center gap-2">
+						<span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">06</span>
+						<span>Third-Party Hosting &amp; Static Assets</span>
+					</h2>
+					<p>
+						MotoFolio is hosted on static web infrastructure (such as Cloudflare Pages) and loads interface styling and
+						typography from third-party CDNs. MotoFolio is not responsible for hosting outages, network interruptions, or
+						changes to third-party CDN/font services.
+					</p>
+				</section>
+
+				<section data-google-signin="enabled" class="hidden space-y-3 border-t border-slate-800 pt-6">
 					<h2 class="text-lg font-bold text-white flex items-center gap-2">
 						<span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">06</span>
 						<span>Third-Party Services &amp; Google Drive Integration</span>

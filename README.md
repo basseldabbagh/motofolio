@@ -43,7 +43,7 @@ All data is stored client-side in the browser's `localStorage` and can be export
 
 - **📱 Progressive Web App (PWA)**: Installable directly to home screens on iOS, Android, macOS, and Windows via [`public/manifest.json`](public/manifest.json) and [`public/sw.js`](public/sw.js) with full offline caching.
 - **🔍 Global Dashboard Filters**: Slice analytics and expense charts by time period (*This Year*, *Last Year*, *Last 6 Months*, *All Time*, or *Custom Date Range*) and service category with instant recalculation.
-- **🚗 Clean Slate & Ad-Free Vehicle Onboarding**: No default vehicles seeded and zero commercial vehicle advertisements or fake data. When starting fresh or when no cars exist in storage, MotoFolio displays an onboarding hub of vehicle archetype templates (Sedan, SUV, Hatchback, Truck 4x4, Sports Coupe, EV, Hybrid, MPV, or Blank) to pick and customize with your own make and model, alongside quick Google Sign-In and CSV/JSON Import/Export actions.
+- **🚗 Clean Slate & Ad-Free Vehicle Onboarding**: No default vehicles seeded and zero commercial vehicle advertisements or fake data. When starting fresh or when no cars exist in storage, MotoFolio displays an onboarding hub of vehicle archetype templates (Sedan, SUV, Hatchback, Truck 4x4, Sports Coupe, EV, Hybrid, MPV, or Blank) to pick and customize with your own make and model, alongside CSV/JSON Import/Export actions (and optional Google Sign-In when `VITE_ENABLE_GOOGLE_SIGN_IN="true"`).
 - **🔗 Sharable Filter Sync in URL**: Active vehicle profile, dashboard date period preset, custom date ranges, category filters, periodic schedule status tabs, and history search queries are automatically synchronized with the URL query parameters (`?car=...&period=...&cat=...&sched=...&q=...`) for instant bookmarking and one-click shareable filtered views.
 - **⏱️ Live Odometer Simulation**: Update mileage manually or increment quickly with `+1k` and `+5k` buttons. Recalculates every service interval and countdown in real time.
 - **🕒 Distance & Time Dual-Tracking**: Periodic schedule tracks by both distance (KM) and calendar time (`intervalMonths`). The system calculates `nextDueDate` alongside `nextDueKm`, triggering warnings based on whichever comes first (KM or Date).
@@ -52,7 +52,7 @@ All data is stored client-side in the browser's `localStorage` and can be export
 - **⛽ Fuel Efficiency & Powertrain Diagnostics**: Interactive KM/L consumption analytics and early ignition health diagnostics. Includes native SVG trend charting, fuel receipt logger modal, and fuel log ledger.
 - **🏷️ OEM Part Numbers Reference**: Quick reference column and badges across the maintenance schedule and printable reports displaying manufacturer OEM part numbers (e.g. spark plugs, transmission fluids, filters).
 - **🌓 Light / Dark Mode Toggle**: Instant theme switching in Settings between System (OS auto-detection), Light, and Dark modes without screen flash.
-- **☁️ Google Drive Sync & Multi-Car Backup**: Sign in with Google to backup vehicle profiles directly to Google Drive. Includes custom Drive folder naming and a one-click "Sync All Local Cars to Drive" button to sync your entire local garage to Drive.
+- **💾 Local-First Storage & Optional Google Drive Sync**: All vehicle data is saved locally in your browser's `localStorage` with CSV/JSON export & import. When `VITE_ENABLE_GOOGLE_SIGN_IN="true"` is enabled in `.env`, users can also sign in with Google to sync vehicle profiles to a private Google Drive folder.
 - **🛠️ Periodic Maintenance Schedule**: Track engine oil, transmission fluid, spark plugs, timing belt/chain, coolant, drive belts, and filters with status badges:
   - 🟢 **Good**: > 1,000 km and > 30 days remaining.
   - 🟡 **Due Soon**: ≤ 1,000 km or ≤ 30 days remaining.
@@ -69,7 +69,7 @@ All data is stored client-side in the browser's `localStorage` and can be export
   - **Vehicle Status Report (A4)**: Comprehensive condition certificate showing current vehicle specifications, document expiry dates, and full periodic schedule health matrix without cluttering maintenance logs.
   - **Service History Report (A4)**: Filter-aware maintenance and expense ledger detailing parts vs. labor costs, mechanic attributions, and workshop receipts matching current dashboard filters.
 - **📲 Instant Report Sharing**: Native Web Share API integration with automatic fallback to one-click WhatsApp text summary copying.
-- **🔒 100% Privacy**: Client-side execution with origin-isolated storage. No backend, no tracking cookies.
+- **🔒 Local-First Privacy**: Client-side execution with origin-isolated browser storage. No backend database stores your vehicle records.
 
 ---
 
@@ -165,11 +165,11 @@ Clicking **Share** opens a modal containing:
 - Native Web Share API integration (on mobile or supported browsers).
 - Formatted plain-text breakdown ready to paste into WhatsApp messages to mechanics, parts suppliers, or prospective buyers.
 
-### 9. Google Account & Cloud Sync
-The header features a real-time Google Account button with connection status:
+### 9. Optional Google Account & Cloud Sync (`VITE_ENABLE_GOOGLE_SIGN_IN`)
+By default (`VITE_ENABLE_GOOGLE_SIGN_IN="false"`), MotoFolio operates strictly with local browser storage (`localStorage`) and CSV/JSON backups. When enabled (`VITE_ENABLE_GOOGLE_SIGN_IN="true"` in `.env`):
 - **Connection Status Indicator**: Displays an emerald status dot and "Connected" when signed in via Google OAuth 2.0, or a slate dot and "Not Connected" when disconnected.
 - **Drive Sync Modal**: Toggle auto-sync on changes, select or create destination folders (`MotoFolio` or custom folders), push current vehicle records to your personal Google Drive, or pull and restore vehicles across browsers.
-- **Developer 1-Click Setup**: Set `GOOGLE_CLIENT_ID` once in [`config.js`](config.js) (or see [`.env.example`](.env.example)). Normal users simply click "Sign in with Google" to connect their Google Drive with 1 click without entering any API key or technical settings.
+- **Developer Setup**: Set `VITE_ENABLE_GOOGLE_SIGN_IN="true"` and `GOOGLE_CLIENT_ID` in `.env` (see [`.env.example`](.env.example)).
 
 ---
 

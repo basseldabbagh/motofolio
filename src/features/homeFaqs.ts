@@ -1,15 +1,19 @@
+import { isGoogleSignInEnabled } from "../config/features";
 import { escapeHtml } from "../utils/format";
 
 interface FaqItem {
   id: string;
   featured?: boolean;
+  requiresGoogleSignIn?: boolean;
   question: string;
   answer: string;
+  answerLocalOnly?: string;
 }
 
 interface FaqCategory {
   id: string;
   name: string;
+  nameLocalOnly?: string;
   faqs: FaqItem[];
 }
 
@@ -28,7 +32,14 @@ export async function initHomeFaqs(): Promise<void> {
     const res = await fetch("./data/faqs.json");
     if (!res.ok) return;
     const data = (await res.json()) as FaqDataset;
-    const allItems = (data.categories ?? []).flatMap((cat) => cat.faqs);
+    const googleEnabled = isGoogleSignInEnabled();
+    const allItems = (data.categories ?? [])
+      .flatMap((cat) => cat.faqs)
+      .filter((item) => googleEnabled || !item.requiresGoogleSignIn)
+      .map((item) => ({
+        ...item,
+        answer: googleEnabled ? item.answer : item.answerLocalOnly ?? item.answer,
+      }));
     const featured = allItems.filter((item) => item.featured);
     const homeItems = featured.length > 0 ? featured : allItems.slice(0, 5);
     if (homeItems.length === 0) return;
