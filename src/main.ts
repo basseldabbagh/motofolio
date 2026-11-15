@@ -6,7 +6,12 @@ import { initPwaInstall } from "./features/pwaInstall";
 import { initWebMcpTools } from "./features/webmcp";
 import { initDataHubListeners } from "./features/dataHub";
 import { initFuelListeners } from "./features/fuel";
-import { autoSyncToGoogleDrive, initGoogleDriveListeners, isGoogleSignedIn } from "./features/googleDrive";
+import {
+  autoSyncToGoogleDrive,
+  initGoogleDriveListeners,
+  isGoogleSignedIn,
+  isGoogleSignInEnabled,
+} from "./features/googleDrive";
 import { syncProfileSelectOptions } from "./features/headerKpis";
 import { initHistoryListeners } from "./features/history";
 import { initOdometerListeners } from "./features/odometer";
@@ -43,7 +48,7 @@ registerStoreCallbacks({
   onRenderAll: renderAll,
   onSyncProfileSelectOptions: syncProfileSelectOptions,
   onUpdateSeo: updateDynamicSEO,
-  onAutoSyncDrive: autoSyncToGoogleDrive,
+  onAutoSyncDrive: isGoogleSignInEnabled() ? autoSyncToGoogleDrive : undefined,
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -119,7 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initReportListeners();
   initDataHubListeners(renderAll);
   initShareListeners();
-  initGoogleDriveListeners(renderAll);
+  // Google Sign-In / Drive Sync (controlled by VITE_ENABLE_GOOGLE_SIGN_IN in .env)
+  if (isGoogleSignInEnabled()) {
+    initGoogleDriveListeners(renderAll);
+  }
   initVehicleAndSettingsListeners(renderAll);
   initModalScrollLock();
   initCookieConsent();

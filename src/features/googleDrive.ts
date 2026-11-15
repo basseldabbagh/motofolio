@@ -48,6 +48,10 @@ function clearStoredAccessToken(): void {
   sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
 }
 
+export function isGoogleSignInEnabled(): boolean {
+  return import.meta.env.VITE_ENABLE_GOOGLE_SIGN_IN === "true";
+}
+
 export function getDriveClientId(): string {
   const runtimeId = window.MOTOFOLIO_CONFIG?.GOOGLE_CLIENT_ID;
   if (typeof runtimeId === "string" && runtimeId.trim()) {
@@ -90,6 +94,7 @@ export function getDriveUserEmail(): string {
 }
 
 export function isGoogleSignedIn(): boolean {
+  if (!isGoogleSignInEnabled()) return false;
   return Boolean(
     localStorage.getItem(GDRIVE_STORAGE_SIGNED_IN) === "true" ||
     getDriveAccessToken() ||
@@ -889,7 +894,7 @@ export async function ensureDriveAccessToken(interactiveFallback = false): Promi
 }
 
 export function autoSyncToGoogleDrive(): void {
-  if (!isDriveAutoSyncEnabled() || !isGoogleSignedIn()) return;
+  if (!isGoogleSignInEnabled() || !isDriveAutoSyncEnabled() || !isGoogleSignedIn()) return;
   if (gdriveAutoSyncTimer) clearTimeout(gdriveAutoSyncTimer);
   gdriveAutoSyncTimer = setTimeout(async () => {
     const token = await ensureDriveAccessToken(false);
@@ -900,6 +905,12 @@ export function autoSyncToGoogleDrive(): void {
 }
 
 export function initGoogleDriveListeners(onRenderAll: () => void): void {
+  if (!isGoogleSignInEnabled()) {
+    document.querySelectorAll<HTMLElement>("[data-google-auth-btn]").forEach((el) => {
+      el.classList.add("hidden");
+    });
+    return;
+  }
   onRenderAllCallback = onRenderAll;
   const driveSyncModal = document.getElementById("driveSyncModal");
   const driveDisconnectModal = document.getElementById("driveDisconnectModal");
