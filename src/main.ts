@@ -49,8 +49,15 @@ registerStoreCallbacks({
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const isDashboardPath = window.location.pathname === "/dashboard" || window.location.pathname === "/dashboard/";
+  const isStandalonePwa =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as unknown as { standalone?: boolean }).standalone === true;
   const explicitDashboard =
-    isDashboardPath || urlParams.get("view") === "dashboard" || urlParams.has("car") || urlParams.has("profile");
+    isDashboardPath ||
+    isStandalonePwa ||
+    urlParams.get("view") === "dashboard" ||
+    urlParams.has("car") ||
+    urlParams.has("profile");
 
   if (!explicitDashboard && !hasSavedCars() && !isGoogleSignedIn() && window.location.protocol.startsWith("http")) {
     window.location.replace("/landing");

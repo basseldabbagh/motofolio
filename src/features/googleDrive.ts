@@ -19,6 +19,8 @@ import { buildCsvFromData, parseCsvText } from "./dataHub";
 import { syncProfileSelectOptions } from "./headerKpis";
 
 const GDRIVE_STORAGE_TOKEN = "motofolio_gdrive_token";
+const GDRIVE_STORAGE_TOKEN_EXPIRES_AT = "motofolio_gdrive_token_expires_at";
+const GDRIVE_STORAGE_SIGNED_IN = "motofolio_gdrive_signed_in";
 const GDRIVE_STORAGE_EMAIL = "motofolio_gdrive_email";
 const GDRIVE_STORAGE_NAME = "motofolio_gdrive_name";
 const GDRIVE_STORAGE_FOLDER_ID = "motofolio_gdrive_folder_id";
@@ -29,6 +31,22 @@ const GDRIVE_FOLDER_NAME = "MotoFolio";
 let gdriveTokenClient: GoogleTokenClient | null = null;
 let gdriveAutoSyncTimer: ReturnType<typeof setTimeout> | null = null;
 let onRenderAllCallback: (() => void) | null = null;
+let pendingTokenResolvers: Array<(token: string) => void> = [];
+let silentAuthInFlight = false;
+
+function persistAccessToken(token: string, expiresInSeconds?: number): void {
+  localStorage.setItem(GDRIVE_STORAGE_TOKEN, token);
+  localStorage.setItem(GDRIVE_STORAGE_SIGNED_IN, "true");
+  const ttlMs = (typeof expiresInSeconds === "number" && expiresInSeconds > 0 ? expiresInSeconds : 3600) * 1000;
+  // Refresh 60s before actual expiry to avoid 401s mid-request
+  localStorage.setItem(GDRIVE_STORAGE_TOKEN_EXPIRES_AT, String(Date.now() + Math.max(ttlMs - 60_000, 60_000)));
+}
+
+function clearStoredAccessToken(): void {
+  localStorage.removeItem(GDRIVE_STORAGE_TOKEN);
+  localStorage.removeItem(GDRIVE_STORAGE_TOKEN_EXPIRES_AT);
+  sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
+}
 
 export function getDriveClientId(): string {
   const runtimeId = window.MOTOFOLIO_CONFIG?.GOOGLE_CLIENT_ID;
@@ -44,7 +62,18 @@ export function getDriveFolderName(): string {
 }
 
 export function getDriveAccessToken(): string {
-  return sessionStorage.getItem(GDRIVE_STORAGE_TOKEN) || "";
+  const token = localStorage.getItem(GDRIVE_STORAGE_TOKEN) || sessionStorage.getItem(GDRIVE_STORAGE_TOKEN) || "";
+  if (!token) return "";
+
+  const expiresAtRaw = localStorage.getItem(GDRIVE_STORAGE_TOKEN_EXPIRES_AT);
+  if (expiresAtRaw) {
+    const expiresAt = Number(expiresAtRaw);
+    if (Number.isFinite(expiresAt) && Date.now() >= expiresAt) {
+      clearStoredAccessToken();
+      return "";
+    }
+  }
+  return token;
 }
 
 export function isDriveAutoSyncEnabled(): boolean {
@@ -61,11 +90,15 @@ export function getDriveUserEmail(): string {
 }
 
 export function isGoogleSignedIn(): boolean {
-  return Boolean(getDriveAccessToken() || getDriveUserEmail());
+  return Boolean(
+    localStorage.getItem(GDRIVE_STORAGE_SIGNED_IN) === "true" ||
+    getDriveAccessToken() ||
+    getDriveUserEmail(),
+  );
 }
 
 export function updateDriveUI(): void {
-  const token = getDriveAccessToken();
+  const signedIn = isGoogleSignedIn();
   const email = getDriveUserEmail();
   const userName = getDriveUserName();
   const unauthSec = document.getElementById("driveUnauthSection");
@@ -78,12 +111,12 @@ export function updateDriveUI(): void {
   if (autoSyncCheck) autoSyncCheck.checked = isDriveAutoSyncEnabled();
 
   renderGoogleAuthButtons({
-    connected: Boolean(token),
+    connected: signedIn,
     userName,
     email,
   });
 
-  if (token) {
+  if (signedIn) {
     unauthSec?.classList.add("hidden");
     authSec?.classList.remove("hidden");
     if (emailSpan) {
@@ -456,7 +489,7 @@ async function saveSelectedLocalCarsToDrive(
 }
 
 export async function handleManualSaveToDrive(): Promise<void> {
-  const token = getDriveAccessToken();
+  const token = await ensureDriveAccessToken(true);
   const statusMsg = document.getElementById("driveSyncStatusMsg");
   if (!token) {
     showToast("Please connect Google Drive first.", "warning");
@@ -555,7 +588,7 @@ async function fetchSelectedFilesFromDrive(
 }
 
 export async function handleFetchCarsFromDrive(): Promise<void> {
-  const token = getDriveAccessToken();
+  const token = await ensureDriveAccessToken(true);
   const statusMsg = document.getElementById("driveSyncStatusMsg");
   if (!token) {
     showToast("Please connect Google Drive first.", "warning");
@@ -628,7 +661,7 @@ async function refreshGoogleUserInfo(token: string): Promise<{ name: string; ema
       headers: { Authorization: `Bearer ${token}` },
     });
     if (uRes.status === 401) {
-      sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
+      clearStoredAccessToken();
       updateDriveUI();
       return { name: "", email: "" };
     }
@@ -655,7 +688,7 @@ async function refreshGoogleUserInfo(token: string): Promise<{ name: string; ema
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (aboutRes.status === 401) {
-        sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
+        clearStoredAccessToken();
         updateDriveUI();
         return { name: "", email: "" };
       }
@@ -730,61 +763,139 @@ function loadGoogleIdentityScript(): Promise<boolean> {
   return gsiLoadPromise;
 }
 
-export async function initGoogleDriveAuth(interactive = false): Promise<void> {
+function resolvePendingTokenWaiters(token: string): void {
+  const waiters = pendingTokenResolvers;
+  pendingTokenResolvers = [];
+  for (const resolve of waiters) {
+    resolve(token);
+  }
+}
+
+export async function initGoogleDriveAuth(interactive = false, silentRefresh = false): Promise<void> {
   const clientId = getDriveClientId();
   if (!clientId) {
-    if (interactive) {
+    if (interactive && !silentRefresh) {
       showToast("Google Sign-in is not configured yet. Set GOOGLE_CLIENT_ID in config.js", "warning");
       console.warn(
         "MotoFolio Google Drive Sync: No GOOGLE_CLIENT_ID found. See config.js and .env.example for instructions.",
       );
     }
+    resolvePendingTokenWaiters("");
     return;
   }
 
   if (typeof google === "undefined" || !google.accounts || !google.accounts.oauth2) {
-    if (!interactive) return;
+    if (!interactive && !silentRefresh) return;
     const loaded = await loadGoogleIdentityScript();
     if (!loaded || typeof google === "undefined" || !google.accounts || !google.accounts.oauth2) {
-      showToast("Unable to load Google Identity Services. Check your connection.", "warning");
+      if (!silentRefresh) {
+        showToast("Unable to load Google Identity Services. Check your connection.", "warning");
+      }
+      resolvePendingTokenWaiters("");
       return;
     }
   }
 
-  gdriveTokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope:
-      "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
-    callback: async (resp) => {
-      if (resp.error) {
-        console.error("Google Auth error:", resp);
-        const statusMsg = document.getElementById("driveSyncStatusMsg");
-        if (statusMsg) statusMsg.textContent = "Sign-in failed: " + resp.error;
-        return;
-      }
-      if (resp.access_token) {
-        sessionStorage.setItem(GDRIVE_STORAGE_TOKEN, resp.access_token);
-        localStorage.removeItem(GDRIVE_STORAGE_EMAIL);
-        localStorage.removeItem(GDRIVE_STORAGE_NAME);
+  if (!gdriveTokenClient) {
+    gdriveTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope:
+        "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
+      callback: async (resp) => {
+        const wasSilent = silentAuthInFlight;
+        silentAuthInFlight = false;
 
-        const { name } = await refreshGoogleUserInfo(resp.access_token);
-        showToast(name ? `Connected as ${name}` : "Google Drive connected");
-        window.openDriveModal?.();
-        await scanDriveFolders();
-      }
-    },
-  });
+        if (resp.error) {
+          resolvePendingTokenWaiters("");
+          if (!wasSilent) {
+            console.error("Google Auth error:", resp);
+            const statusMsg = document.getElementById("driveSyncStatusMsg");
+            if (statusMsg) statusMsg.textContent = "Sign-in failed: " + resp.error;
+          }
+          return;
+        }
+        if (resp.access_token) {
+          persistAccessToken(resp.access_token, resp.expires_in);
+          resolvePendingTokenWaiters(resp.access_token);
+          updateDriveUI();
 
-  if (interactive) {
+          const { name } = await refreshGoogleUserInfo(resp.access_token);
+          if (!wasSilent) {
+            showToast(name ? `Connected as ${name}` : "Google Drive connected");
+            window.openDriveModal?.();
+            await scanDriveFolders();
+          }
+        } else {
+          resolvePendingTokenWaiters("");
+        }
+      },
+    });
+  }
+
+  if (silentRefresh) {
+    silentAuthInFlight = true;
+    const hintEmail = getDriveUserEmail();
+    gdriveTokenClient.requestAccessToken({
+      prompt: "",
+      ...(hintEmail ? { hint: hintEmail } : {}),
+    });
+  } else if (interactive) {
+    silentAuthInFlight = false;
     gdriveTokenClient.requestAccessToken({ prompt: "consent" });
   }
 }
 
+/**
+ * Returns a valid Google Drive access token, transparently attempting a silent refresh
+ * when the user is signed in (`isGoogleSignedIn()`) but the short-lived OAuth token expired.
+ */
+export async function ensureDriveAccessToken(interactiveFallback = false): Promise<string> {
+  const existing = getDriveAccessToken();
+  if (existing) return existing;
+  if (!isGoogleSignedIn() && !interactiveFallback) return "";
+
+  const waitForToken = (timeoutMs: number): Promise<string> =>
+    new Promise((resolve) => {
+      let settled = false;
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          resolve("");
+        }
+      }, timeoutMs);
+      pendingTokenResolvers.push((tok) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          resolve(tok);
+        }
+      });
+    });
+
+  if (isGoogleSignedIn()) {
+    const tokenPromise = waitForToken(6000);
+    await initGoogleDriveAuth(false, true);
+    const refreshed = await tokenPromise;
+    if (refreshed) return refreshed;
+  }
+
+  if (interactiveFallback) {
+    const tokenPromise = waitForToken(60000);
+    await initGoogleDriveAuth(true, false);
+    return await tokenPromise;
+  }
+
+  return "";
+}
+
 export function autoSyncToGoogleDrive(): void {
-  if (!isDriveAutoSyncEnabled() || !getDriveAccessToken()) return;
+  if (!isDriveAutoSyncEnabled() || !isGoogleSignedIn()) return;
   if (gdriveAutoSyncTimer) clearTimeout(gdriveAutoSyncTimer);
-  gdriveAutoSyncTimer = setTimeout(() => {
-    void syncCurrentCarToDrive(false);
+  gdriveAutoSyncTimer = setTimeout(async () => {
+    const token = await ensureDriveAccessToken(false);
+    if (token) {
+      await syncCurrentCarToDrive(false);
+    }
   }, 1500);
 }
 
@@ -803,6 +914,13 @@ export function initGoogleDriveListeners(onRenderAll: () => void): void {
     if (token) {
       void refreshGoogleUserInfo(token);
       void scanDriveFolders();
+    } else if (isGoogleSignedIn()) {
+      void ensureDriveAccessToken(false).then((refreshed) => {
+        if (refreshed) {
+          void refreshGoogleUserInfo(refreshed);
+          void scanDriveFolders();
+        }
+      });
     }
   };
 
@@ -823,7 +941,8 @@ export function initGoogleDriveListeners(onRenderAll: () => void): void {
   };
 
   const performDisconnect = (removeLocalCars: boolean): void => {
-    sessionStorage.removeItem(GDRIVE_STORAGE_TOKEN);
+    clearStoredAccessToken();
+    localStorage.removeItem(GDRIVE_STORAGE_SIGNED_IN);
     localStorage.removeItem(GDRIVE_STORAGE_EMAIL);
     localStorage.removeItem(GDRIVE_STORAGE_NAME);
     if (removeLocalCars) {
@@ -891,10 +1010,10 @@ export function initGoogleDriveListeners(onRenderAll: () => void): void {
   });
 
   document.getElementById("welcomeGoogleSignInBtn")?.addEventListener("click", () => {
-    if (getDriveAccessToken() || !getDriveClientId()) {
+    if (isGoogleSignedIn() || !getDriveClientId()) {
       openDriveModal();
     } else {
-      initGoogleDriveAuth(true);
+      void initGoogleDriveAuth(true);
     }
   });
 
@@ -902,5 +1021,11 @@ export function initGoogleDriveListeners(onRenderAll: () => void): void {
   const existingToken = getDriveAccessToken();
   if (existingToken) {
     void refreshGoogleUserInfo(existingToken);
+  } else if (isGoogleSignedIn()) {
+    void ensureDriveAccessToken(false).then((refreshed) => {
+      if (refreshed) {
+        void refreshGoogleUserInfo(refreshed);
+      }
+    });
   }
 }

@@ -125,11 +125,12 @@ export interface TemplatePreset {
 
 export interface GoogleTokenResponse {
   access_token?: string;
+  expires_in?: number;
   error?: string;
 }
 
 export interface GoogleTokenClient {
-  requestAccessToken(options?: { prompt?: string }): void;
+  requestAccessToken(options?: { prompt?: string; hint?: string }): void;
 }
 
 export interface UserProfile {

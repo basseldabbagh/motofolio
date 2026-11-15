@@ -110,6 +110,34 @@ function injectGoogleSiteVerification(token?: string): Plugin {
   };
 }
 
+/**
+ * Injects Google Tag Manager / Google Tag `<script>` tags immediately after `<head>`
+ * across all HTML entry points when `VITE_GTM_IDS` is configured, so static tag
+ * verifiers (e.g. GTM "Test your website") detect the tag immediately.
+ */
+function injectGoogleTagManager(rawIds?: string): Plugin {
+  const ids = (rawIds || "")
+    .split(",")
+    .map((id) => id.replace(/^[\\"'`]+|[\\"'`]+$/g, "").trim())
+    .filter((id) => id.length > 0);
+  const uniqueIds = Array.from(new Set(ids));
+
+  return {
+    name: "inject-google-tag-manager",
+    transformIndexHtml(html) {
+      if (uniqueIds.length === 0) return html;
+      const scripts = uniqueIds
+        .map(
+          (id) =>
+            `<script async src="https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(id)}"></script>`,
+        )
+        .join("\n\t\t");
+      const snippet = `${scripts}\n\t\t<script>\n\t\t\twindow.dataLayer = window.dataLayer || [];\n\t\t\tfunction gtag(){dataLayer.push(arguments);}\n\t\t\tgtag('js', new Date());\n\t\t</script>`;
+      return html.replace(/<head([^>]*)>/i, `<head$1>\n\t\t${snippet}`);
+    },
+  };
+}
+
 interface FaqJsonItem {
   id: string;
   featured?: boolean;
@@ -294,6 +322,7 @@ export default defineConfig(({ mode }) => {
       copyStaticRuntimeAssets(),
       generateFaqArtifacts(),
       injectGoogleSiteVerification(verificationToken),
+      injectGoogleTagManager(env.VITE_GTM_IDS),
     ],
     build: {
       rollupOptions: {
