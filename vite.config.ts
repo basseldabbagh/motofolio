@@ -89,6 +89,14 @@ function copyStaticRuntimeAssets(): Plugin {
           fs.cpSync(srcDir, destDir, { recursive: true });
         }
       }
+
+      // Emit dashboard.html alongside index.html so static hosts (e.g. Cloudflare Pages)
+      // serve /dashboard directly with HTTP 200 instead of 308-redirecting /index.html -> /
+      const builtIndex = path.join(outDir, "index.html");
+      const builtDashboard = path.join(outDir, "dashboard.html");
+      if (fs.existsSync(builtIndex)) {
+        fs.copyFileSync(builtIndex, builtDashboard);
+      }
     },
   };
 }
